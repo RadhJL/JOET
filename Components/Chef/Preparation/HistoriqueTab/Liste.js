@@ -4,9 +4,9 @@ import {
     Text,
     StyleSheet, ScrollView, RefreshControl, Dimensions
 } from "react-native";
-import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right } from 'native-base'
+import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Card } from 'native-base'
 import * as firebase from 'firebase'
-
+import { Ionicons } from '@expo/vector-icons'
 var Plat = [require('../../../../assets/Kosksi.jpg'), require('../../../../assets/Makrouna1.jpg'), require('../../../../assets/Rouz.jpg')]
 let OldDate = ""
 let AfficheDate = true
@@ -66,37 +66,41 @@ class Liste extends Component {
                         }
 
                         return (
-                            <List key={Ind}>
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
-                                    </Left>
-                                    <Body>
-                                        {AfficheDate == true ?
-                                            <View style={{ alignSelf: 'center',paddingBottom:20 }}>
-                                                <Text style={{ fontSize: 20, color: 'red' ,fontWeight: 'bold'}} note numberOfLines={1} >{Data.Date.substr(0, 15)} </Text>
-                                            </View>
-                                            : console.log()
-                                        }
+                            <View key={Ind}>
+                                {AfficheDate == true ?
+                                    <View style={{ paddingTop: 10 }}>
+                                        <Text style={{ fontSize: 20, color: '#FF2E2A', fontWeight: 'bold' }} note numberOfLines={1} >{Data.Date.substr(0, 15)} </Text>
+                                    </View>
+                                    : console.log()
+                                }
+                                <Card >
+                                    <List >
+                                        <ListItem thumbnail>
+                                            <Left>
+                                                <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
+                                            </Left>
+                                            <Body>
 
-                                        <Text style={{ fontWeight: 'bold', fontStyle: 'italic' }}>{Data.Plat}</Text>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ color: 'gray' }}>Pour</Text>
-                                            <Text style={{ fontWeight: 'bold' }}>{" " + Data.Qte} personne(s)</Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ color: 'gray' }}>Livré a</Text>
-                                            <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>{" " + Data.Date.substr(16, 5)}H</Text>
-                                        </View>
-                                    </Body>
+                                                <Text style={{ fontWeight: 'bold', fontStyle: 'italic' }}>{Data.Plat}</Text>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ color: 'gray' }}>Pour</Text>
+                                                    <Text style={{ fontWeight: 'bold' }}>{" " + Data.Qte} personne(s)</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ color: 'gray' }}>Livré a</Text>
+                                                    <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>{" " + Data.Date.substr(16, 5)}H</Text>
+                                                </View>
+                                            </Body>
 
-                                    <Right>
-                                        <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}> Details</Text>
-                                        </Button>
-                                    </Right>
-                                </ListItem>
-                            </List>
+                                            <Right>
+                                                <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle-outline" /></Text>
+                                                </Button>
+                                            </Right>
+                                        </ListItem>
+                                    </List>
+                                </Card>
+                            </View>
                         )
                     })
                 }

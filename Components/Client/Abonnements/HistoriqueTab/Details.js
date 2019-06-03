@@ -60,9 +60,9 @@ class Details extends Component {
                     :
                     <Container>
                         <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
-                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button></Left>
                             <Body style={{ alignSelf: 'center', flex: 3, alignItems: 'center', paddingRight: 55 }}>
-                                <Text style={{ fontWeight: 'bold', color: 'red' }}>ID {this.state.Commande.IdCommande}</Text>
+                                <Text style={{ fontWeight: 'bold', color: '#FF2E2A' }}>ID {this.state.Commande.IdCommande}</Text>
                             </Body>
 
                         </Header>
@@ -111,7 +111,7 @@ class Details extends Component {
                                 <CardItem style={{ justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 60, height: 60, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Chef')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 10, fontWeight: 'bold' }}>Chef {this.state.Commande.NomChef}</Text>
                                     </View>
@@ -120,7 +120,7 @@ class Details extends Component {
                                 <CardItem style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 60, height: 60, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Livreur')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} rounded source={{ uri: this.state.LivreurPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} rounded source={{ uri: this.state.LivreurPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 10, fontWeight: 'bold' }}>Livreur {this.state.Commande.NomLivreur}</Text>
                                     </View>

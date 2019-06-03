@@ -103,7 +103,7 @@ class Liste extends Component {
         return (
             <View>
                 <View style={{ justifyContent: 'center', paddingLeft: 10,paddingTop:10 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Aujourd'hui</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>Aujourd'hui</Text>
                 </View>
                 <Card>
                     {
@@ -146,7 +146,7 @@ class Liste extends Component {
                                             <Right>
 
                                                 <Button transparent style={{ backgroundColor: 'white' }} onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
                                                 </Button>
 
                                             </Right>
@@ -170,7 +170,7 @@ class Liste extends Component {
         return (
             <View>
                 <View style={{ justifyContent: 'center', paddingLeft: 10,paddingTop:10 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Demain</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>Demain</Text>
                 </View>
                 <Card>
                     {
@@ -211,7 +211,7 @@ class Liste extends Component {
                                             </Body>
                                             <Right>
                                                 <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
                                                 </Button>
                                             </Right>
                                         </ListItem>
@@ -231,7 +231,7 @@ class Liste extends Component {
         return (
             <View>
                 <View style={{ justifyContent: 'center', paddingLeft: 10,paddingTop:10 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>{this.state.Day3.substr(0, 11)}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>{this.state.Day3.substr(0, 11)}</Text>
                 </View>
                 <Card>
                     {
@@ -272,7 +272,7 @@ class Liste extends Component {
                                             </Body>
                                             <Right>
                                                 <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
                                                 </Button>
                                             </Right>
                                         </ListItem>
@@ -306,7 +306,6 @@ class Liste extends Component {
                                 <Text style={{ fontWeight: 'bold', fontSize: 15, color: 'gray' }}>Vous n'avez pas de commande</Text>
                             </View>
                         }
-
                     </Content>
                 }
             </Container>

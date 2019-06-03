@@ -60,7 +60,7 @@ class AddChef extends Component {
     handleBackButtonClick() {
 
         Alert.alert(
-            'Retourner',
+            'Annuler',
             "Voulez-vous vraiment annuler l'inscription?",
             [
                 {
@@ -515,7 +515,7 @@ export default AddChef;
 const styles = StyleSheet.create({
     container: {
 
-        backgroundColor: 'red'
+        backgroundColor: '#FF2E2A'
     },
     dim: {
         width: Dimensions.get('window').width,

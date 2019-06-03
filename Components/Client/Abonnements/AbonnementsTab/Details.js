@@ -62,7 +62,7 @@ class Details extends Component {
     }
     async Annuler() {
         Alert.alert(
-            'Anuuler',
+            'Annuler',
             'Voulez-vous vraiment annuler la commande?',
             [
                 {
@@ -95,12 +95,12 @@ class Details extends Component {
                     <ActivityIndicator /> :
                     <Container>
                         <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
-                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button></Left>
                             <Body style={{ alignSelf: 'center', flex: 3, alignItems: 'center', paddingRight: 55 }}>
-                                <Text style={{ fontWeight: 'bold', color: 'red' }}>ID {this.state.Commande.IdCommande}</Text>
+                                <Text style={{ fontWeight: 'bold', color: '#FF2E2A' }}>ID {this.state.Commande.IdCommande}</Text>
                             </Body>
-
                         </Header>
+
                         <Content>
                             <CardItem style={{ alignContent: 'center', justifyContent: 'center', width: styles.dim.width - 100, alignSelf: 'center' }}>
                                 <Image source={Plat[this.getInd(this.state.Commande.Plat)]} style={{ height: styles.dim.height / 4, width: null, flex: 1 }} />
@@ -118,12 +118,12 @@ class Details extends Component {
                                         {this.state.Commande.Livraison == 2 ?
                                             <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                                 <Text style={{ fontWeight: 'bold' }}>Prix</Text>
-                                                <Text style={{ alignSelf: 'center' ,fontWeight:'bold',color:'gray'}}> {this.state.Commande.Prix + 2 + " "}DT</Text>
+                                                <Text style={{ alignSelf: 'center' ,fontWeight:'bold',color:'gray'}}>  {this.state.Commande.Prix + 2 + " "}DT</Text>
                                             </View>
                                             :
                                             <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                                 <Text style={{ fontWeight: 'bold' }}>Prix</Text>
-                                                <Text style={{ fontWeight: 'bold' }}> {this.state.Commande.Prix} DT{" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>  {this.state.Commande.Prix} DT{" "}</Text>
                                                 <Text style={{ fontWeight: 'bold', color: 'gray' }}>Livraison INCLUS</Text>
 
                                             </View>
@@ -142,7 +142,7 @@ class Details extends Component {
                                             <Text style={{ fontWeight: 'bold', color: 'gray' }}> (a donner au livreur) </Text>
                                         </View>
 
-                                        <Text style={{ alignSelf: 'center', paddingTop: 8, fontWeight: 'bold', color: 'red' }}>{this.state.Commande.CleClient}</Text>
+                                        <Text style={{ alignSelf: 'center', paddingTop: 8, fontWeight: 'bold', color: '#FF2E2A' }}>{this.state.Commande.CleClient}</Text>
                                     </Card>
                                 </Body>
                             </CardItem>
@@ -150,7 +150,7 @@ class Details extends Component {
                                 <CardItem style={{ justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 60, height: 60, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Chef')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 10, fontWeight: 'bold' }}>Chef {this.state.Commande.NomChef}</Text>
                                     </View>
@@ -159,7 +159,7 @@ class Details extends Component {
                                 <CardItem style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 60, height: 60, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Livreur')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} rounded source={{ uri: this.state.LivreurPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} rounded source={{ uri: this.state.LivreurPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 10, fontWeight: 'bold' }}>Livreur {this.state.Commande.NomLivreur}</Text>
                                     </View>

@@ -59,7 +59,7 @@ class Profile extends Component {
                         <Header transparent></Header>
                         <View style={{ paddingTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                             <Thumbnail large source={{ uri: this.state.PhotoUrl }}></Thumbnail>
-                            <Text style={{ fontWeight: 'bold', fontSize: 20 }}> {this.state.Nom}</Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 23 }}> {this.state.Nom}</Text>
                             <Text style={{paddingTop:10}}>{this.state.Commandes} Commande(s)</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 60 }}>
@@ -67,7 +67,7 @@ class Profile extends Component {
                                 <Button transparent style={{ flex: 1, height: 60, paddingBottom: 10 }}
                                     full onPress={() => this.props.navigation.navigate('ParametreClient')}
                                 >
-                                    <Text style={{ color: 'red' }}><Feather style={{ fontSize: 40, }} name="settings"></Feather></Text>
+                                    <Text style={{ color: '#FF2E2A' }}><Feather style={{ fontSize: 40, }} name="settings"></Feather></Text>
                                 </Button>
                                 <Text style={{ color: 'gray', fontWeight: 'bold' }}>Parametre</Text>
                             </View>
@@ -75,7 +75,7 @@ class Profile extends Component {
                                 <Button transparent style={{ flex: 1, height: 60 }}
                                     full onPress={() => this.props.navigation.navigate('ModificationClient')}
                                 >
-                                    <Text style={{ color: 'red' }}><AntDesign style={{ fontSize: 40, }} name="edit"></AntDesign></Text>
+                                    <Text style={{ color: '#FF2E2A' }}><AntDesign style={{ fontSize: 40, }} name="edit"></AntDesign></Text>
                                 </Button>
                                 <Text style={{ color: 'gray', fontWeight: 'bold' }}>Edit Profile</Text>
                             </View>

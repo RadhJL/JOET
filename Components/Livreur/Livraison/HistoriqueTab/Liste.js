@@ -68,7 +68,7 @@ class Liste extends Component {
                         return (
                             <View key={Ind}>
                                 {AfficheDate == true ?
-                                    <Text style={{ fontSize: 20, color: 'red', fontWeight: 'bold', alignSelf: 'center',paddingBottom:10,paddingTop:10 }} >{Data.Date.substr(0, 15)}</Text>
+                                    <Text style={{ fontSize: 20, color: '#FF2E2A', fontWeight: 'bold', alignSelf: 'center',paddingBottom:10,paddingTop:10 }} >{Data.Date.substr(0, 15)}</Text>
                                     : console.log()
                                 }
                                 <Card>
@@ -105,7 +105,7 @@ class Liste extends Component {
 
                                             <Right>
                                                 <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle-outline" /></Text>
                                                 </Button>
                                             </Right>
                                         </ListItem>

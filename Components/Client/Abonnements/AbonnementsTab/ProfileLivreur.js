@@ -32,7 +32,7 @@ class ProfileLivreur extends Component {
                     <ActivityIndicator /> :
                     <Content>
                         <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
-                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button></Left>
                             <Body></Body>
                             <Right></Right>
                         </Header>
@@ -43,7 +43,7 @@ class ProfileLivreur extends Component {
 
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.Profile.Rate.Score + " "}</Text>
-                                    <Text style={{ paddingTop: 3 }}><AntDesign style={{ fontSize: 20, color: 'red' }} name="star"></AntDesign></Text>
+                                    <Text style={{ paddingTop: 3 }}><AntDesign style={{ fontSize: 20, color: '#FF2E2A' }} name="star"></AntDesign></Text>
                                     <Text style={{ color: 'gray', paddingTop: 4, fontWeight: 'bold' }}>{"  " + this.state.Profile.Rate.Nombre + " "}avis</Text>
                                 </View>
 

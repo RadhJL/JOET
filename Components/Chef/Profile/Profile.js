@@ -16,7 +16,9 @@ class Profile extends Component {
             Nom: '',
             PhotoUrl: null,
             Commandes: 0,
-            wait: true
+            wait: true,
+            Score: 0,
+            Nombre: 0
         }
     }
 
@@ -39,8 +41,15 @@ class Profile extends Component {
                     //console.log(s.val())
                     that.setState({ Commandes: s.val() })
                 })
+
             }
         })
+        await firebase.database().ref('Chef/' + firebase.auth().currentUser.uid + "/Rate/").once('value', function (s) {
+            console.log(s.val())
+            that.setState({ Score: s.val().Score })
+            that.setState({ Nombre: s.val().Nombre })
+        })
+
         this.setState({ wait: false })
     }
 
@@ -53,15 +62,24 @@ class Profile extends Component {
                         <Header transparent></Header>
                         <View style={{ paddingTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                             <Thumbnail large source={{ uri: this.state.PhotoUrl }}></Thumbnail>
-                            <Text style={{ fontWeight: 'bold', fontSize: 20 }}> {this.state.Nom}</Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 25 }}> {this.state.Nom}</Text>
+
+                            <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.Score + " "}</Text>
+                                <Text style={{ paddingTop: 1 }}><AntDesign style={{ fontSize: 20, color: '#FF2E2A' }} name="star"></AntDesign></Text>
+                                <Text style={{ color: 'gray', paddingTop: 4, fontWeight: 'bold' }}>{"  " + this.state.Nombre + " "}avis</Text>
+                            </View>
                             <Text style={{ paddingTop: 10 }}>{this.state.Commandes} Commande(s)</Text>
                         </View>
+
+
+
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 60 }}>
                             <View>
                                 <Button transparent style={{ flex: 1, height: 60, paddingBottom: 10 }}
                                     full onPress={() => this.props.navigation.navigate('ParametreChef')}
                                 >
-                                    <Text style={{ color: 'red' }}><Feather style={{ fontSize: 40, }} name="settings"></Feather></Text>
+                                    <Text style={{ color: '#FF2E2A' }}><Feather style={{ fontSize: 40, }} name="settings"></Feather></Text>
                                 </Button>
                                 <Text style={{ color: 'gray', fontWeight: 'bold' }}>Parametre</Text>
                             </View>
@@ -69,7 +87,7 @@ class Profile extends Component {
                                 <Button transparent style={{ flex: 1, height: 60 }}
                                     full onPress={() => this.props.navigation.navigate('ModificationChef')}
                                 >
-                                    <Text style={{ color: 'red' }}><AntDesign style={{ fontSize: 40, }} name="edit"></AntDesign></Text>
+                                    <Text style={{ color: '#FF2E2A' }}><AntDesign style={{ fontSize: 40, }} name="edit"></AntDesign></Text>
                                 </Button>
                                 <Text style={{ color: 'gray', fontWeight: 'bold' }}>Edit Profile</Text>
                             </View>

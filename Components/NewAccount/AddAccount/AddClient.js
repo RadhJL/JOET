@@ -62,7 +62,7 @@ class AddClient extends Component {
 
     handleBackButtonClick() {
         Alert.alert(
-            'Retourner',
+            'Annuler',
             "Voulez-vous vraiment annuler l'inscription?",
             [
                 {
@@ -156,10 +156,8 @@ class AddClient extends Component {
     renderIOS() {
         return (
 
-
-
             <Content >
-                <Form style={{ alignSelf: 'center', paddingTop: (styles.dim.height / 10), width: styles.dim.width - (styles.dim.width / 10) }}>
+                <Form style={{ alignSelf: 'center', paddingTop: (styles.dim.height / 15), width: styles.dim.width - (styles.dim.width / 10) }}>
                     <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Numero de téléphone</Text>
                     <Item>
                         <Input style={{ fontSize: 14 }} maxLength={8} keyboardType='number-pad' placeholder='Ajouter numero de telephone...' onChangeText={(Numero) => this.setState({ Numero: Numero, Line1: false }, this.setState({ FirstLine: false }))}></Input>

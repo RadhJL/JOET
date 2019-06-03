@@ -16,6 +16,7 @@ class Details extends Component {
             Annulation: false,
             LivreurPhoto: '',
             ClientPhoto: '',
+            Date: '',
             wait: true,
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -33,6 +34,7 @@ class Details extends Component {
     async componentDidMount() {
         var that = this
         await BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        this.setState({ Date: this.props.navigation.getParam('Data').Date.substr(0, 11) + ' ' + this.props.navigation.getParam('Data').Date.substr(16, 5) })
 
         await this.setState({ Commande: this.props.navigation.getParam('Data') })
         if (this.state.Commande.Heure == "Dejeuner" && new Date().getHours() <= 9 || new Date(this.state.Commande.Date).getDate() > new Date().getDate() || new Date(this.state.Commande.Date).getMonth() > new Date().getMonth())
@@ -92,58 +94,70 @@ class Details extends Component {
                 {this.state.wait == true ?
                     <ActivityIndicator /> :
                     <Container>
-                        <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
-                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
-                            <Body style={{ alignSelf: 'center', flex: 3, alignItems: 'center', paddingRight: 55 }}>
-                                <Text style={{ fontWeight: 'bold', color: 'red' }}>ID {this.state.Commande.IdCommande}</Text>
-                            </Body>
 
+                        <Header style={{ height: styles.dim.height / 15, paddingTop: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
+                            <Left style={{ flex: 2 }}>
+                                <Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button>
+                            </Left>
+                            <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center', paddingLeft: 33 }}>
+                                <Text style={{ fontWeight: 'bold', color: '#FF2E2A' }}>ID {this.state.Commande.IdCommande}</Text>
+                            </Body>
+                            <Right style={{ flex: 3 }}>
+                            </Right>
                         </Header>
+
                         <Content>
-                            <CardItem style={{ alignContent: 'center', justifyContent: 'center', width: styles.dim.width - 100, alignSelf: 'center' }}>
+                            <CardItem style={{ alignContent: 'center', justifyContent: 'center', width: styles.dim.width - 100, alignSelf: 'center', marginTop: 2 }}>
                                 <Image source={Plat[this.getInd(this.state.Commande.Plat)]} style={{ height: styles.dim.height / 4, width: null, flex: 1 }} />
                             </CardItem>
 
                             <CardItem >
                                 <Body>
-                                    <Text style={{ fontWeight: 'bold', fontStyle: 'italic', alignSelf: 'center', fontSize: 20 }}>{this.state.Commande.Plat}</Text>
-                                    <Text style={{ fontWeight: 'bold', paddingTop: 10 }}>Quantité </Text>
-                                    <Text style={{ alignSelf: 'center', fontWeight: 'bold' }}>{this.state.Commande.Qte}{" "} personne(s)</Text>
-                                    <Text style={{ fontWeight: 'bold', paddingTop: 10 }}>Prix</Text>
-                                    <Text style={{ alignSelf: 'center' }}>{this.state.Commande.Prix + " "}DT</Text>
+                                    <Card style={{ width: styles.dim.width - styles.dim.width / 30, alignSelf: 'center', padding: 20 }}>
+                                        <Text style={{ fontWeight: 'bold', fontStyle: 'italic', alignSelf: 'center', fontSize: 20 }}>{this.state.Commande.Plat}</Text>
+                                        <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                            <Text style={{ fontWeight: 'bold' }}>Quantité </Text>
+                                            <Text style={{ alignSelf: 'center', fontWeight: 'bold', color: 'gray' }}>{this.state.Commande.Qte}{" "}personne(s)</Text>
+                                        </View>
 
-
-                                    <Text style={{ fontWeight: 'bold', paddingTop: 10 }}>Etat </Text>
-                                    <Text style={{ alignSelf: 'center', color: 'green', fontWeight: 'bold' }}>{this.state.Commande.Etat}</Text>
-
-
-                                    <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                        <Text style={{ fontWeight: 'bold' }}>Code </Text>
-                                        <Text style={{ fontWeight: 'bold', color: 'gray' }}> a donner au livreur </Text>
-                                    </View>
-
-                                    <Text style={{ alignSelf: 'center', paddingTop: 8, fontWeight: 'bold' }}>{this.state.Commande.CleChef}</Text>
+                                        <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                            <Text style={{ fontWeight: 'bold' }}>Prix </Text>
+                                            <Text style={{}}>{this.state.Commande.Prix} DT{" "}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                            <Text style={{ fontWeight: 'bold' }}>Etat </Text>
+                                            <Text style={{ color: 'green', fontWeight: 'bold' }}> {this.state.Commande.Etat}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                            <Text style={{ fontWeight: 'bold' }}>Date </Text>
+                                            <Text style={{}}>{this.state.Date}H</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                            <Text style={{ fontWeight: 'bold' }}>Code </Text>
+                                            <Text style={{ fontWeight: 'bold', color: 'gray' }}> (a donner au livreur) </Text>
+                                        </View>
+                                        <Text style={{ alignSelf: 'center', paddingTop: 8, fontWeight: 'bold', color: '#FF2E2A' }}>{this.state.Commande.CleChef}</Text>
+                                    </Card>
                                 </Body>
-                            </CardItem>
-
-                            <CardItem style={{ justifyContent: 'space-around', paddingTop: 10 }}>
-                                <View >
-                                    <Button style={{ flexDirection: 'column', width: 60, height: 60, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Client')}>
-                                        <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} rounded source={{ uri: this.state.ClientPhoto }}></Thumbnail>
-                                    </Button>
-                                    <Text style={{ paddingTop: 10, fontWeight: 'bold' }}>Client {this.state.Commande.NomClient}</Text>
-                                </View>
                             </CardItem>
 
                             <CardItem style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 10 }}>
                                 <View >
                                     <Button style={{ flexDirection: 'column', width: 60, height: 60, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Livreur')}>
-                                        <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} rounded source={{ uri: this.state.LivreurPhoto }}></Thumbnail>
+                                        <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} rounded source={{ uri: this.state.LivreurPhoto }}></Thumbnail>
                                     </Button>
                                     <Text style={{ paddingTop: 10, fontWeight: 'bold' }}>Livreur {this.state.Commande.NomLivreur}</Text>
                                 </View>
                             </CardItem>
 
+                            <CardItem style={{ justifyContent: 'space-around', paddingTop: 10 }}>
+                                <View >
+                                    <Button style={{ flexDirection: 'column', width: 60, height: 60, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Client')}>
+                                        <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} rounded source={{ uri: this.state.ClientPhoto }}></Thumbnail>
+                                    </Button>
+                                    <Text style={{ paddingTop: 10, fontWeight: 'bold' }}>Client {this.state.Commande.NomClient}</Text>
+                                </View>
+                            </CardItem>
 
                         </Content>
 

@@ -34,7 +34,7 @@ class Abonnements extends Component {
             <Container>
 
                 {/* <Header style={{ backgroundColor: '#3fb0ac' }} hasTabs/> */}
-                {/* <Text style={{ fontWeight: 'bold',color:'red' }}>Abonnements</Text> */}
+                {/* <Text style={{ fontWeight: 'bold',color:'#FF2E2A' }}>Abonnements</Text> */}
                 <Tabs
 
                     style={{ paddingTop: 20, backgroundColor: '#FF2E2A' }} renderTabBar={() => <ScrollableTab style={{ backgroundColor: '#FF2E2A' }} />}>

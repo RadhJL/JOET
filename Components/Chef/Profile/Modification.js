@@ -25,6 +25,7 @@ class Modification extends Component {
             Rouz: 'false',
             wait: true,
             Line1: false,
+            Square2: false,
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
@@ -36,7 +37,7 @@ class Modification extends Component {
     }
     handleBackButtonClick() {
         Alert.alert(
-            'Retourn',
+            'Return',
             'Voulez-vous vraiment retourner?',
             [
                 {
@@ -86,7 +87,8 @@ class Modification extends Component {
             if (this.state.Numero.length < 8) {
                 await this.setState({ Line1: true })
                 this.setState({ wait: false })
-            } else if (this.state.Numero != this.state.AncienNumero) {
+            }
+            else if (this.state.Numero != this.state.AncienNumero) {
 
                 firebase.database().ref('Chef/' + that.state.uid).update({ Numero: that.state.Numero, })
                 await firebase.database().ref('Commandes/')
@@ -103,12 +105,16 @@ class Modification extends Component {
                     })
             }
 
+            if (this.state.Kosksi == 'false' && this.state.Makrouna == 'false' && this.state.Rouz == 'false') {
+                await this.setState({ Square2: true })
+                this.setState({ wait: false })
+            }
 
-            if (this.state.radio2 != this.state.AncienShift && this.state.Line1 == false) {
+            if (this.state.radio2 != this.state.AncienShift && this.state.Line1 == false && this.state.Square2 == false) {
                 firebase.database().ref('Chef/' + that.state.uid).update({ Shift: that.state.radio2, })
 
             }
-            if (this.state.Line1 == false) {
+            if (this.state.Line1 == false && this.state.Square2 == false) {
                 firebase.database().ref('Chef/' + that.state.uid).update({
                     Kosksi: that.state.Kosksi,
                     Makrouna: that.state.Makrouna,
@@ -116,234 +122,232 @@ class Modification extends Component {
                 })
             }
 
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////
-                if (this.state.radio2 === 'Dejeuner' && this.state.Line1 == false) {
-                    if (this.state.Kosksi === 'true') {
-                        await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (this.state.radio2 === 'Dejeuner' && this.state.Line1 == false && this.state.Square2 == false) {
+                if (this.state.Kosksi === 'true') {
+                    await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
 
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
-                    } else {
-                        await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
+                } else {
+                    await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
 
-                    }
-                    if (this.state.Makrouna === 'true') {
-                        await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
-                    } else {
-                        await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
+                }
+                if (this.state.Makrouna === 'true') {
+                    await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
+                } else {
+                    await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
 
-                    } if (this.state.Rouz === 'true') {
-                        await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
+                } if (this.state.Rouz === 'true') {
+                    await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
 
-                    } else {
-                        await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
-                    }
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                } else if (this.state.radio2 === 'Dinner' && this.state.Line1 == false) {
+                } else {
+                    await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
+                }
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            } else if (this.state.radio2 === 'Dinner' && this.state.Line1 == false && this.state.Square2 == false) {
 
-                    if (this.state.Kosksi === 'true') {
-                        await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
+                if (this.state.Kosksi === 'true') {
+                    await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
 
-                    } else {
-                        await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
+                } else {
+                    await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
 
-                    }
-                    if (this.state.Makrouna === 'true') {
-                        await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
-
-
-                    } else {
-                        await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
-
-                    } if (this.state.Rouz === 'true') {
-                        await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
-
-                    } else {
-                        await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
-
-                    }
-
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                } else if (this.state.Line1 == false) {
-
-                    if (this.state.Kosksi === 'true') {
-                        await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-
-                        await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
+                }
+                if (this.state.Makrouna === 'true') {
+                    await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
 
 
-                    } else {
-                        await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
+                } else {
+                    await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
 
-                    }
-                    if (this.state.Makrouna === 'true') {
-                        await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
+                } if (this.state.Rouz === 'true') {
+                    await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
 
-                    } else {
-                        await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
+                } else {
+                    await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
 
-                    } if (this.state.Rouz === 'true') {
-                        await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-                        await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).set({
-                            Numero: that.state.AncienNumero,
-                            Adresse: that.state.Adresse,
-                            Nom: that.state.Nom,
-                            Id: that.state.uid
-                        })
-
-                    } else {
-                        await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
-                        await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
-
-                    }
                 }
 
-                if (this.state.Line1 == false) {
-                    this.setState({ wait: false })
-                    this.props.navigation.goBack(null)
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            } else if (this.state.Line1 == false && this.state.Square2 == false) {
+
+                if (this.state.Kosksi === 'true') {
+                    await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+
+                    await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+
+
+                } else {
+                    await firebase.database().ref('Plats/1/Dinner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/1/Dejeuner/' + this.state.uid).remove()
+
                 }
-            } catch (error) {
-                alert("Error voire console log")
-                console.log(error)
+                if (this.state.Makrouna === 'true') {
+                    await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+
+                } else {
+                    await firebase.database().ref('Plats/2/Dinner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/2/Dejeuner/' + this.state.uid).remove()
+
+                } if (this.state.Rouz === 'true') {
+                    await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+                    await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).set({
+                        Numero: that.state.AncienNumero,
+                        Adresse: that.state.Adresse,
+                        Nom: that.state.Nom,
+                        Id: that.state.uid
+                    })
+
+                } else {
+                    await firebase.database().ref('Plats/3/Dinner/' + this.state.uid).remove()
+                    await firebase.database().ref('Plats/3/Dejeuner/' + this.state.uid).remove()
+
+                }
             }
+
+            if (this.state.Line1 == false && this.state.Square2 == false) {
+                this.setState({ wait: false })
+                this.props.navigation.goBack(null)
+            }
+        } catch (error) {
+            alert("Error voire console log")
+            console.log(error)
         }
+    }
 
     render() {
-            return (
-                <Container >
-                    {this.state.wait == true ?
-                        <ActivityIndicator /> :
-                        <Container>
+        return (
+            <Container >
+                {this.state.wait == true ?
+                    <ActivityIndicator /> :
+                    <Container>
+                        <Header style={{ height: styles.dim.height / 8, paddingTop: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF2E2A' }}>
+                            <Left style={{ flex: 2 }}>
+                                <Button transparent onPress={() => this.handleBackButtonClick()}><Icon style={{ color: 'white' }} name="arrow-back"></Icon></Button>
 
-                            <Header style={{ height: styles.dim.height / 8, paddingTop: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF2E2A' }}>
-                                <Left style={{ flex: 1 }}>
-                                    <Button transparent onPress={() => this.handleBackButtonClick()}><Icon style={{ color: 'white' }} name="arrow-back"></Icon></Button>
-                                </Left>
+                            </Left>
+                            <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center', paddingLeft: 33 }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>Profile</Text>
+                            </Body>
+                            <Right style={{ flex: 4 }}>
+                                <Button transparent onPress={() => this.Confirmer()}>
+                                    <Label style={{ color: 'white', fontWeight: 'bold' }}>Save</Label>
+                                </Button>
+                            </Right>
+                        </Header>
+                        <Content >
+                            <Form style={{ alignSelf: 'center', paddingTop: (styles.dim.height / 15), width: styles.dim.width - (styles.dim.width / 10) }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16 }} >Numero de telephone</Text>
+                                <Item>
+                                    <Input style={{ fontSize: 14 }} maxLength={8} keyboardType='numeric' placeholder={"Ajouter numero de telephone"} value={this.state.Numero} onChangeText={(Numero) => this.setState({ Numero: Numero, Line1: false })}></Input>
+                                </Item>
+                                {this.state.Line1 == true ?
+                                    <View>
+                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez numero de telephone</Text>
+                                    </View>
+                                    : console.log()}
 
-                                <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center' }}>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>Profile</Text>
-                                </Body>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, paddingTop: 15 }}>Vous travaillez le</Text>
 
-                                <Right style={{ flex: 4 }}>
-                                    <Button transparent onPress={() => this.Confirmer()}>
-                                        <Label style={{ fontWeight: 'bold', color: 'white' }}>Save</Label>
-                                    </Button>
-                                </Right>
-                            </Header>
+                                <Card>
+                                    <CardItem button style={{ backgroundColor: this.state.radio2 == 'Dejeuner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'Dejeuner', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio2 == 'Dejeuner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Dejeuner</Text>
+                                    </CardItem>
+                                </Card>
 
-                            <Content >
-                                <Form style={{ alignSelf: 'center', paddingTop: (styles.dim.height / 15), width: styles.dim.width - (styles.dim.width / 10) }}>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 16 }} >Numero de telephone</Text>
-                                    <Item>
-                                        <Input style={{ fontSize: 14 }} maxLength={8} keyboardType='numeric' placeholder={Numero} onChangeText={(Numero) => this.setState({ Numero: Numero, Line1: false })}></Input>
-                                    </Item>
-                                    {this.state.Line1 == true ?
-                                        <View>
-                                            <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
-                                            <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez numero de telephone</Text>
-                                        </View>
-                                        : console.log()}
+                                <Card >
+                                    <CardItem button style={{ backgroundColor: this.state.radio2 == 'Dinner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'Dinner', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio2 == 'Dinner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Diner</Text>
+                                    </CardItem>
+                                </Card>
 
-                                    <Text style={{ fontWeight: 'bold', fontSize: 16, paddingTop: 15 }}>Vous travaillez le</Text>
+                                <Card>
 
-                                    <Card>
-                                        <CardItem button style={{ backgroundColor: this.state.radio2 == 'Dejeuner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'Dejeuner', })}>
-                                            <Text style={{ fontSize: 14, color: this.state.radio2 == 'Dejeuner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Dejeuner</Text>
-                                        </CardItem>
-                                    </Card>
+                                    <CardItem button style={{ backgroundColor: this.state.radio2 == 'DejeunerEtDinner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'DejeunerEtDinner', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio2 == 'DejeunerEtDinner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Dejeuner et Diner</Text>
+                                    </CardItem>
 
-                                    <Card >
-                                        <CardItem button style={{ backgroundColor: this.state.radio2 == 'Dinner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'Dinner', })}>
-                                            <Text style={{ fontSize: 14, color: this.state.radio2 == 'Dinner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Diner</Text>
-                                        </CardItem>
-                                    </Card>
-
-                                    <Card>
-
-                                        <CardItem button style={{ backgroundColor: this.state.radio2 == 'DejeunerEtDinner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'DejeunerEtDinner', })}>
-                                            <Text style={{ fontSize: 14, color: this.state.radio2 == 'DejeunerEtDinner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Dejeuner et Diner</Text>
-                                        </CardItem>
-
-                                    </Card>
+                                </Card>
 
 
-                                    <Text style={{ fontWeight: 'bold', fontSize: 16, paddingTop: 15 }}>Vous pouvez preparer</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, paddingTop: 15 }}>Vous pouvez preparer</Text>
 
+                                <View style={{ borderWidth: this.state.Square2 == true ? 2.5 : 0, borderColor: this.state.Square2 == true ? '#5e0231' : 'white', }}>
 
                                     <Card transparent>
 
-                                        <CardItem button onPress={() => this.state.Kosksi == 'true' ? this.setState({ Kosksi: 'false' }) : this.setState({ Kosksi: 'true', })}>
+                                        <CardItem button onPress={() => this.state.Kosksi == 'true' ? this.setState({ Kosksi: 'false' }) : this.setState({ Kosksi: 'true', Square2: false })}>
                                             <View style={{ paddingRight: 20 }}>
                                                 <CheckBox
-                                                    onPress={() => this.state.Kosksi == 'true' ? this.setState({ Kosksi: 'false' }) : this.setState({ Kosksi: 'true', })}
+                                                    onPress={() => this.state.Kosksi == 'true' ? this.setState({ Kosksi: 'false' }) : this.setState({ Kosksi: 'true', Square2: false })}
                                                     style={{ backgroundColor: this.state.Kosksi == 'true' ? '#FF2E2A' : 'white', borderColor: '#FF2E2A' }} checked={this.state.Kosksi === 'true'} />
                                             </View>
                                             <View style={{ paddingLeft: 20 }}>
@@ -353,10 +357,10 @@ class Modification extends Component {
                                     </Card>
                                     <Card transparent>
 
-                                        <CardItem button onPress={() => this.state.Makrouna == 'true' ? this.setState({ Makrouna: 'false' }) : this.setState({ Makrouna: 'true', })}>
+                                        <CardItem button onPress={() => this.state.Makrouna == 'true' ? this.setState({ Makrouna: 'false' }) : this.setState({ Makrouna: 'true', Square2: false })}>
                                             <View style={{ paddingRight: 20 }}>
                                                 <CheckBox
-                                                    onPress={() => this.state.Makrouna == 'true' ? this.setState({ Makrouna: 'false' }) : this.setState({ Makrouna: 'true', })}
+                                                    onPress={() => this.state.Makrouna == 'true' ? this.setState({ Makrouna: 'false' }) : this.setState({ Makrouna: 'true', Square2: false })}
                                                     style={{ backgroundColor: this.state.Makrouna == 'true' ? '#FF2E2A' : 'white', borderColor: '#FF2E2A' }} checked={this.state.Makrouna === 'true'} />
                                             </View>
                                             <View style={{ paddingLeft: 20 }}>
@@ -366,10 +370,10 @@ class Modification extends Component {
                                     </Card>
                                     <Card transparent >
 
-                                        <CardItem button onPress={() => this.state.Rouz == 'true' ? this.setState({ Rouz: 'false' }) : this.setState({ Rouz: 'true', })}>
+                                        <CardItem button onPress={() => this.state.Rouz == 'true' ? this.setState({ Rouz: 'false' }) : this.setState({ Rouz: 'true', Square2: false })}>
                                             <View style={{ paddingRight: 20 }}>
                                                 <CheckBox
-                                                    onPress={() => this.state.Rouz == 'true' ? this.setState({ Rouz: 'false' }) : this.setState({ Rouz: 'true', })}
+                                                    onPress={() => this.state.Rouz == 'true' ? this.setState({ Rouz: 'false' }) : this.setState({ Rouz: 'true', Square2: false })}
                                                     style={{ backgroundColor: this.state.Rouz == 'true' ? '#FF2E2A' : 'white', borderColor: '#FF2E2A' }} checked={this.state.Rouz === 'true'} />
                                             </View>
                                             <View style={{ paddingLeft: 20 }}>
@@ -377,29 +381,34 @@ class Modification extends Component {
                                             </View>
                                         </CardItem>
                                     </Card>
+                                    {this.state.Square2 == true ?
+                                        <View>
+                                            <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                            <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Choisissez au moins un plat a preparer</Text>
+                                        </View>
+                                        : console.log()}
+                                </View>
+                            </Form>
+                        </Content>
 
 
-                                </Form>
-                            </Content>
-
-
-                        </Container>
-                    }
-                </Container>
-            );
-        }
+                    </Container>
+                }
+            </Container>
+        );
     }
-    export default Modification;
+}
+export default Modification;
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center'
-        },
-        dim: {
-            width: Dimensions.get('window').width,
-            height: Dimensions.get('window').height
-        }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    dim: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
+    }
 
-    });
+});

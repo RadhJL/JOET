@@ -131,24 +131,42 @@ class Details extends Component {
                     :
                     <KeyboardAvoidingView style={{ flex: 2 }} behavior="padding" enabled>
 
-                        <Header transparent style={{ height: 60, backgroundColor: 'white' }}>
-                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
-                            <Body style={{ alignSelf: 'center', flex: 3, alignItems: 'center', paddingRight: 55 }}>
-                                <Text style={{ fontWeight: 'bold', color: 'red' }}>ID {this.state.Commande.IdCommande}</Text>
+                        {/* <Header transparent style={{ height: 60, backgroundColor: 'white' }}>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button></Left>
+                            <Body style={{ alignSelf: 'center', flex: 3, alignItems: 'center', }}>
+                                <Text style={{ fontWeight: 'bold', color: '#FF2E2A' }}>ID {this.state.Commande.IdCommande}</Text>
                                 {this.state.Commande.Livraison == 2 ? console.log() :
                                     <Text style={{ fontWeight: 'bold', color: 'gray' }}>Livraison INCLUS</Text>}
                             </Body>
+                            <Right>
+                            </Right>
+                        </Header> */}
+
+                        <Header style={{ height: styles.dim.height / 10, paddingTop: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fafafa' }}>
+                            <Left style={{ flex: 2 }}>
+                                <Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button>
+
+                            </Left>
+                            <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center', paddingLeft: 33 }}>
+                                <Text style={{ fontWeight: 'bold', color: '#FF2E2A' }}>ID {this.state.Commande.IdCommande}</Text>
+                                {this.state.Commande.Livraison == 2 ? console.log() :
+                                    <Text style={{ fontWeight: 'bold', color: 'gray',fontSize:13,paddingTop:4 }}>Livraison INCLUS</Text>}
+                            </Body>
+                            <Right style={{ flex: 3 }}>
+                            </Right>
                         </Header>
+
+
                         <Content>
                             {this.state.Commande.Etat == "En Livraison" ?
                                 <CardItem style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 80, height: 80, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Client')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} large rounded source={{ uri: this.state.ClientPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} large rounded source={{ uri: this.state.ClientPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 30, fontWeight: 'bold', alignSelf: 'center' }}>CLIENT {this.state.Commande.NomClient}</Text>
                                         <View style={{ flexDirection: 'row', paddingTop: 5 }}>
-                                            <Text style={{ alignSelf: 'center', fontWeight: 'bold' }}>{this.state.Commande.AdresseClient} </Text>
+                                            <Text style={{ alignSelf: 'center', }}>{this.state.Commande.AdresseClient} </Text>
                                             <Text style={{ paddingTop: 3, paddingLeft: 2 }}><FontAwesome style={{ fontSize: 15 }} name="home" /></Text>
                                         </View>
                                         <View style={{ flexDirection: 'row', alignSelf: 'center', paddingTop: 5 }}>
@@ -161,7 +179,7 @@ class Details extends Component {
                                 <CardItem style={{ justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 80, height: 80, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Chef')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} large rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} large rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 30, fontWeight: 'bold', alignSelf: 'center' }}>CHEF {this.state.Commande.NomChef}</Text>
                                         <View style={{ flexDirection: 'row', paddingTop: 5 }}>
@@ -213,7 +231,7 @@ class Details extends Component {
                                             <Input keyboardType={"number-pad"} maxLength={6} style={{ fontSize: 15 }} placeholder="Entrer code chef" onChangeText={(Code) => this.setState({ Code })}></Input>
                                         </Item>
                                         <Button transparent full style={{ backgroundColor: '#fafafa', marginTop: 10 }} onPress={() => this.ChangeState()}>
-                                            <Text style={{}}><MaterialCommunityIcons style={{ fontSize: 40, color: 'red' }} name="briefcase-check" /></Text>
+                                            <Text style={{}}><MaterialCommunityIcons style={{ fontSize: 40, color: '#FF2E2A' }} name="briefcase-check" /></Text>
                                         </Button>
                                     </Card> :
                                     <Card>
@@ -221,7 +239,7 @@ class Details extends Component {
                                             <Input keyboardType={"number-pad"} maxLength={6} style={{ fontSize: 15 }} placeholder="Entrer code client" onChangeText={(Code) => this.setState({ Code })}  ></Input>
                                         </Item>
                                         <Button transparent full style={{ backgroundColor: '#fafafa', marginTop: 10 }} onPress={() => this.ChangeState()} >
-                                            <Text style={{}}><MaterialCommunityIcons style={{ fontSize: 40, color: 'red' }} name="briefcase-check" /></Text>
+                                            <Text style={{}}><MaterialCommunityIcons style={{ fontSize: 40, color: '#FF2E2A' }} name="briefcase-check" /></Text>
                                         </Button>
                                     </Card>
                                 }
@@ -231,14 +249,14 @@ class Details extends Component {
                                 <CardItem style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 80, height: 80, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Client')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} large rounded source={{ uri: this.state.ClientPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} large rounded source={{ uri: this.state.ClientPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 30, fontWeight: 'bold', alignSelf: 'center' }}>CLIENT {this.state.Commande.NomClient}</Text>
-                                        <View style={{ flexDirection: 'row',paddingTop:5 }}>
+                                        <View style={{ flexDirection: 'row', paddingTop: 5 }}>
                                             <Text style={{ alignSelf: 'center' }}>{this.state.Commande.AdresseClient} </Text>
                                             <Text style={{ paddingTop: 3, paddingLeft: 2 }}><FontAwesome style={{ fontSize: 15 }} name="home" /></Text>
                                         </View>
-                                        <View style={{ flexDirection: 'row', alignSelf: 'center',paddingTop:5 }}>
+                                        <View style={{ flexDirection: 'row', alignSelf: 'center', paddingTop: 5 }}>
                                             <Text style={{ fontWeight: 'bold', color: 'gray' }}>{this.state.Commande.NumeroClient} </Text>
                                             <Text style={{ paddingTop: 3 }}><MaterialIcons name="phone-iphone" /></Text>
                                         </View>
@@ -248,14 +266,14 @@ class Details extends Component {
                                 <CardItem style={{ justifyContent: 'space-around', paddingTop: 10 }}>
                                     <View >
                                         <Button style={{ flexDirection: 'column', width: 80, height: 80, alignSelf: 'center' }} transparent onPress={() => this.ShowProfile('Chef')}>
-                                            <Thumbnail style={{ borderWidth: 2, borderColor: 'red' }} large rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
+                                            <Thumbnail style={{ borderWidth: 2, borderColor: '#FF2E2A' }} large rounded source={{ uri: this.state.ChefPhoto }}></Thumbnail>
                                         </Button>
                                         <Text style={{ paddingTop: 30, fontWeight: 'bold', alignSelf: 'center' }}>CHEF {this.state.Commande.NomChef}</Text>
-                                        <View style={{ flexDirection: 'row',paddingTop:5 }}>
+                                        <View style={{ flexDirection: 'row', paddingTop: 5 }}>
                                             <Text style={{ alignSelf: 'center' }}>{this.state.Commande.AdresseChef} </Text>
                                             <Text style={{ paddingTop: 3 }}><FontAwesome style={{ fontSize: 15 }} name="home" /></Text>
                                         </View>
-                                        <View style={{ flexDirection: 'row', alignSelf: 'center',paddingTop:5 }}>
+                                        <View style={{ flexDirection: 'row', alignSelf: 'center', paddingTop: 5 }}>
                                             <Text style={{ fontWeight: 'bold', color: 'gray' }}>{this.state.Commande.NumeroChef} </Text>
                                             <Text style={{ paddingTop: 3 }}><MaterialIcons name="phone-iphone" /></Text>
                                         </View>

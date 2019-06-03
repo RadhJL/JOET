@@ -33,12 +33,12 @@ class ProfileChef extends Component {
                     :
                     <Content>
                         <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
-                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button></Left>
                             <Body></Body>
                             <Right></Right>
                         </Header>
                         <Content>
-                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ justifyContent: 'center', alignItems: 'center',paddingTop:10 }}>
                                 <Thumbnail large rounded source={{ uri: this.state.Profile.PhotoUrl}}></Thumbnail>
                                 <Text style={{ fontWeight: 'bold', fontSize: 20, paddingTop: 10 }}>{this.state.Profile.Nom}</Text>
 

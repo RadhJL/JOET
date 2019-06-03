@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    StyleSheet, ScrollView, RefreshControl
+    StyleSheet, ScrollView, RefreshControl, Dimensions
 } from "react-native";
 import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Card, CardItem } from 'native-base'
 import * as firebase from 'firebase'
@@ -98,7 +98,7 @@ class Liste extends Component {
         return (
             <View>
                 <View style={{ justifyContent: 'center', paddingLeft: 10, paddingTop: 10 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Aujourd'hui</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>Aujourd'hui</Text>
                 </View>
                 <Card>
                     {this.state.Plats1.map((Data, Ind) => {
@@ -143,7 +143,7 @@ class Liste extends Component {
                                         </Body>
                                         <Right>
                                             <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
                                             </Button>
                                         </Right>
 
@@ -164,7 +164,7 @@ class Liste extends Component {
             <View>
 
                 <View style={{ justifyContent: 'center', paddingLeft: 10, paddingTop: 10 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Demain</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>Demain</Text>
                 </View>
                 <Card>
                     {
@@ -211,7 +211,7 @@ class Liste extends Component {
                                             </Body>
                                             <Right>
                                                 <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
                                                 </Button>
                                             </Right>
 
@@ -230,7 +230,7 @@ class Liste extends Component {
         return (
             <View>
                 <View style={{ justifyContent: 'center', paddingLeft: 10, paddingTop: 10 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>{this.state.Day3.substr(0, 11)}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>{this.state.Day3.substr(0, 11)}</Text>
                 </View>
                 <Card>
                     {this.state.Plats3.map((Data, Ind) => {
@@ -275,7 +275,7 @@ class Liste extends Component {
                                         </Body>
                                         <Right>
                                             <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
                                             </Button>
                                         </Right>
 
@@ -301,7 +301,10 @@ class Liste extends Component {
                     {this.state.Plats2.length > 0 ? this.renderAbonnement2() : console.log()}
                     {this.state.Plats3.length > 0 ? this.renderAbonnement3() : console.log()}
                     {(this.state.Plats1.length > 0 || this.state.Plats2.length > 0 || this.state.Plats3.length) > 0 ?
-                        console.log() : <View style={{ justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontWeight: 'bold', fontSize: 20 }}>Pas de livraison</Text></View>}
+                        console.log() :
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: styles.dim.height - styles.dim.height / 10 }}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 15, color: 'gray' }}>Pas de livraison en cours</Text>
+                        </View>}
                 </Content>
 
             </Container>
@@ -317,5 +320,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    dim: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
     }
 });

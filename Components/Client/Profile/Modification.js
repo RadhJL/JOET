@@ -54,7 +54,7 @@ class Modification extends Component {
     }
     handleBackButtonClick() {
         Alert.alert(
-            'Retourn',
+            'Return',
             'Voulez-vous vraiment retourner?',
             [
                 {
@@ -255,7 +255,7 @@ class Modification extends Component {
                                         {this.state.DisplayResidence == true ?
 
                                             <View>
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Ville</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Ville</Text>
                                                 <Item style={{ marginTop: -10 }}>
                                                     <Picker
                                                         mode="dropdown"
@@ -281,7 +281,7 @@ class Modification extends Component {
                                                     </View>
                                                     : console.log()}
 
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Numero de plaque</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Numero de plaque</Text>
                                                 <Item style={{ marginTop: -10 }}>
                                                     <Input style={{ fontSize: 14 }} keyboardType='number-pad' maxLength={3} placeholder={"Ajouter numero de plaque"} value={this.state.PlaqueResidence} onChangeText={(PlaqueResidence) => this.setState({ PlaqueResidence: PlaqueResidence, Line3: false })}></Input>
                                                 </Item>
@@ -291,7 +291,7 @@ class Modification extends Component {
                                                         <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez numero de plaque</Text>
                                                     </View>
                                                     : console.log()}
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Rue</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Rue</Text>
 
                                                 <Item style={{ marginTop: -10 }}>
                                                     <Input style={{ fontSize: 14 }} placeholder={"Ajouter rue "} value={this.state.RueResidence} onChangeText={(RueResidence) => this.setState({ RueResidence: RueResidence, Line4: false })}></Input>
@@ -302,7 +302,7 @@ class Modification extends Component {
                                                         <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez le nom de rue</Text>
                                                     </View>
                                                     : console.log()}
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Details</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Details</Text>
 
                                                 <Item style={{ marginTop: -9 }}>
                                                     <Input style={{ fontSize: 14 }} placeholder={"Ajouter plus de details"} value={this.state.DetailsResidence} onChangeText={(DetailsResidence) => this.setState({ DetailsResidence: DetailsResidence })}></Input>
@@ -322,7 +322,7 @@ class Modification extends Component {
 
 
                                             <View>
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Ville</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Ville</Text>
                                                 <Item style={{ marginTop: -10 }}>
                                                     <Picker
                                                         mode="dropdown"
@@ -349,7 +349,7 @@ class Modification extends Component {
                                                     </View>
                                                     : console.log()}
 
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Numero de plaque</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Numero de plaque</Text>
                                                 <Item style={{ marginTop: -10 }}>
                                                     <Input style={{ fontSize: 14 }} keyboardType='number-pad' maxLength={3} placeholder={"Ajouter numero de plaque"} value={this.state.PlaqueTravail} onChangeText={(PlaqueTravail) => this.setState({ PlaqueTravail: PlaqueTravail, Line6: false })}></Input>
                                                 </Item>
@@ -360,7 +360,7 @@ class Modification extends Component {
                                                     </View>
                                                     : console.log()}
 
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Rue</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Rue</Text>
                                                 <Item style={{ marginTop: -10 }}>
                                                     <Input style={{ fontSize: 14 }} placeholder={"Ajouter nom de rue.."} value={this.state.RueTravail} onChangeText={(RueTravail) => this.setState({ RueTravail: RueTravail, Line7: false })}></Input>
                                                 </Item>
@@ -371,7 +371,7 @@ class Modification extends Component {
                                                     </View>
                                                     : console.log()}
 
-                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Details</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 14, paddingLeft: 20, paddingTop: 10 }}>Details</Text>
                                                 <Item style={{ marginTop: -9 }}>
                                                     <Input style={{ fontSize: 14 }} placeholder={"Ajouter plus de details"} value={this.state.DetailsTravail} onChangeText={(DetailsTravail) => this.setState({ DetailsTravail })}></Input>
                                                 </Item>

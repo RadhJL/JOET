@@ -4,7 +4,7 @@ import {
     Text,
     StyleSheet
 } from "react-native";
-import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Icon } from 'native-base'
+import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Icon, Card } from 'native-base'
 import * as firebase from 'firebase'
 import { AntDesign } from '@expo/vector-icons'
 import ActivityIndicator from './../../../ActivityIndicator'
@@ -32,37 +32,45 @@ class ProfileChef extends Component {
                     :
                     <Content>
                         <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
-                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: '#FF2E2A' }} name="arrow-back"></Icon></Button></Left>
                             <Body></Body>
                             <Right></Right>
                         </Header>
                         <Content>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Thumbnail large rounded source={{ uri: this.state.Profile.PhotoUrl }}></Thumbnail>
-                                <Text style={{ fontWeight: 'bold', fontSize: 20, paddingTop: 10 }}>{this.state.Profile.Nom}</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 25, paddingTop: 10 }}>{this.state.Profile.Nom}</Text>
+
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                    <Text>{this.state.Profile.Rate.Score + " "}</Text>
-                                    <Text><AntDesign style={{ fontSize: 15 }} name="star"></AntDesign></Text>
-                                    <Text style={{ color: 'gray' }}>{"  " + this.state.Profile.Rate.Nombre + " "}avis</Text>
+                                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.Profile.Rate.Score + " "}</Text>
+                                    <Text style={{ paddingTop: 3 }}><AntDesign style={{ fontSize: 20, color: '#FF2E2A' }} name="star"></AntDesign></Text>
+                                    <Text style={{ color: 'gray', paddingTop: 4, fontWeight: 'bold' }}>{"  " + this.state.Profile.Rate.Nombre + " "}avis</Text>
                                 </View>
-                                <Text style={{ paddingTop: 10 }}>{this.state.Profile.Commandes} Commande(s) faite</Text>
+
+                                <Text style={{ paddingTop: 10,fontWeight:'bold',color:'gray' }}>{this.state.Profile.Commandes} Commande(s) faite</Text>
                             </View>
 
-                            <View style={{ paddingTop: 30 }}>
-                                <Text style={{ fontWeight: 'bold' }}>Numero {this.state.Profile.Numero}</Text>
-                                <Text style={{ fontWeight: 'bold' }}>Adresse {this.state.Profile.Adresse}</Text>
+                            <Card style={{ padding: 5, marginTop: 20 }}>
 
-                            </View>
-                            <Text style={{ paddingTop: 20, fontWeight: 'bold', fontSize: 15 }}>Prépare</Text>
-                            <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                {this.state.Profile.Kosksi === "true" ? <Text>Koksi</Text> : console.log()}
-                                {this.state.Profile.Makrouna === "true" ? <Text> Makrouna</Text> : console.log()}
-                                {this.state.Profile.Rouz === "true" ? <Text> Rouz</Text> : console.log()}
-                            </View>
-                            <View style={{ paddingTop: 20 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Travaille</Text>
-                                {this.state.Profile.Shift === "DejeunerEtDinner" ? <Text style={{ paddingTop: 10 }}>Le Dejeuner et Le Diner</Text> : <Text style={{ paddingTop: 10 }}>Le {this.state.Profile.Shift}</Text>}
-                            </View>
+                                <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                    <Text style={{ fontWeight: 'bold' }}>Numero  </Text>
+                                    <Text >{this.state.Profile.Numero}</Text>
+                                </View>
+                                <View style={{ paddingTop: 10, flexDirection: 'row' }}>
+                                    <Text style={{ fontWeight: 'bold' }}>Adresse </Text>
+                                    <Text style={{}}> {this.state.Profile.Adresse}</Text>
+                                </View>
+                                <Text style={{ paddingTop: 10, fontWeight: 'bold', fontSize: 15 }}>Prépare</Text>
+                                <View style={{ flexDirection: 'row', paddingTop: 5 }}>
+                                    {this.state.Profile.Kosksi === "true" ? <Text>Koksi</Text> : console.log()}
+                                    {this.state.Profile.Makrouna === "true" ? <Text> Makrouna</Text> : console.log()}
+                                    {this.state.Profile.Rouz === "true" ? <Text> Rouz</Text> : console.log()}
+                                </View>
+                                <View style={{ paddingTop: 10 }}>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Travaille</Text>
+                                    {this.state.Profile.Shift === "DejeunerEtDinner" ? <Text style={{ paddingTop: 5 }}>Le Dejeuner et Le Diner</Text> : <Text style={{ paddingTop: 5 }}>Le {this.state.Profile.Shift}</Text>}
+                                </View>
+                            </Card>
                         </Content>
                     </Content>
                 }

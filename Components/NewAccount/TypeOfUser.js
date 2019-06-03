@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import { Container, Right, Label, Header, Content, Card, CardItem, Thumbnail, Button, Icon, Left, Body, Form } from 'native-base';
 import * as firebase from 'firebase'
+import ActivityIndicator from './../ActivityIndicator'
 class TypeOfUser extends Component {
     constructor(props) {
         super(props)
@@ -16,8 +17,8 @@ class TypeOfUser extends Component {
     }
 
     async componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-
+        await BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        await this.setState({ wait: false })
     }
 
     componentWillUnmount() {
@@ -57,74 +58,80 @@ class TypeOfUser extends Component {
     render() {
         return (
             <Container  >
-                <Header style={{height:styles.ex.height/8, paddingTop: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF2E2A' }}>
-                    <Left style={{ flex: 1 }}>
-                        <Button transparent onPress={() => this.signOut()}><Icon style={{ color: 'white' }} name="arrow-back"></Icon></Button>
+                {this.state.wait == true ?
+                    <ActivityIndicator /> :
+                    <Container>
+                        <Header style={{ height: styles.ex.height / 8, paddingTop: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF2E2A' }}>
+                            <Left style={{ flex: 1 }}>
+                                <Button transparent onPress={() => this.signOut()}><Icon style={{ color: 'white' }} name="arrow-back"></Icon></Button>
 
-                    </Left>
-                    <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center' }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>Bienvenue à JOET</Text>
-                        <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>Regoignez nous comme</Text>
-                    </Body>
-                    <Right style={{ flex: 1 }}></Right>
-                </Header>
-
-                <Content >
-                    <Card style={{marginTop:15,  width: styles.ex.width - (styles.ex.width / 15), alignSelf: 'center' }}>
-                        <CardItem style={{ backgroundColor: '#fafafa', alignItems: 'center' }}>
-                            <Body style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Client</Text>
+                            </Left>
+                            <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center' }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>Bienvenue à JOET</Text>
+                                <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'white' }}>Regoignez nous comme</Text>
                             </Body>
-                        </CardItem>
-                        <CardItem style={{ backgroundColor: '#fafafa', alignItems: 'center' }} button onPress={() => this.addUser('Client')}>
-                            <Body>
-                                <Text>
-                                    Commander nos plats{"\n"}
+                            <Right style={{ flex: 1 }}></Right>
+                        </Header>
+
+                        <Content >
+                            <Card style={{ marginTop: 15, width: styles.ex.width - (styles.ex.width / 15), alignSelf: 'center' }}>
+                                <CardItem style={{ backgroundColor: '#fafafa', alignItems: 'center' }}>
+                                    <Body style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Client</Text>
+                                    </Body>
+                                </CardItem>
+                                <CardItem style={{ backgroundColor: '#fafafa', alignItems: 'center' }} button onPress={() => this.addUser('Client')}>
+                                    <Body>
+                                        <Text>
+                                            Commander nos plats{"\n"}
+                                        </Text>
+                                    </Body>
+                                    <Right>
+                                        <Thumbnail large square source={require('../../assets/Client.jpg')} />
+                                    </Right>
+                                </CardItem>
+                            </Card>
+
+                            <Card style={{ width: styles.ex.width - (styles.ex.width / 15), alignSelf: 'center' }}>
+                                <CardItem style={{ backgroundColor: '#fafafa' }}>
+                                    <Body style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Livreur</Text>
+                                    </Body>
+                                </CardItem>
+                                <CardItem style={{ backgroundColor: '#fafafa' }} button onPress={() => this.addUser('Livreur')}>
+                                    <Body>
+                                        <Text>
+                                            Livrer nos plats
                                 </Text>
-                            </Body>
-                            <Right>
-                                <Thumbnail large square source={require('../../assets/Client.jpg')} />
-                            </Right>
-                        </CardItem>
-                    </Card>
+                                    </Body>
+                                    <Right>
+                                        <Thumbnail large square source={require('../../assets/Livreur.png')} />
+                                    </Right>
+                                </CardItem>
+                            </Card>
 
-                    <Card style={{ width: styles.ex.width - (styles.ex.width / 15), alignSelf: 'center' }}>
-                        <CardItem style={{ backgroundColor: '#fafafa' }}>
-                            <Body style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Livreur</Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem style={{ backgroundColor: '#fafafa' }} button onPress={() => this.addUser('Livreur')}>
-                            <Body>
-                                <Text>
-                                    Livrer nos plats
-                                </Text>
-                            </Body>
-                            <Right>
-                                <Thumbnail large square source={require('../../assets/Livreur.png')} />
-                            </Right>
-                        </CardItem>
-                    </Card>
+                            <Card style={{ width: styles.ex.width - (styles.ex.width / 15), alignSelf: 'center' }}>
+                                <CardItem style={{ backgroundColor: '#fafafa' }}>
+                                    <Body style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Chef</Text>
+                                    </Body>
+                                </CardItem>
+                                <CardItem style={{ backgroundColor: '#fafafa' }} button onPress={() => this.addUser('Chef')}>
+                                    <Body>
+                                        <Text>
+                                            Preparer nos plats{'\n'}
+                                        </Text>
+                                    </Body>
+                                    <Right>
+                                        <Thumbnail large square source={require('../../assets/Chef.jpeg')} />
+                                    </Right>
+                                </CardItem>
+                            </Card>
 
-                    <Card style={{ width: styles.ex.width - (styles.ex.width / 15), alignSelf: 'center' }}>
-                        <CardItem style={{ backgroundColor: '#fafafa' }}>
-                            <Body style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Chef</Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem style={{ backgroundColor: '#fafafa' }} button onPress={() => this.addUser('Chef')}>
-                            <Body>
-                                <Text>
-                                    Preparez nos plats{'\n'}
-                                </Text>
-                            </Body>
-                            <Right>
-                                <Thumbnail large square source={require('../../assets/Chef.jpeg')} />
-                            </Right>
-                        </CardItem>
-                    </Card>
+                        </Content>
+                    </Container>
+                }
 
-                </Content>
             </Container>
         );
     }

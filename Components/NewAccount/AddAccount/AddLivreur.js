@@ -42,7 +42,7 @@ class AddLivreur extends Component {
 
     handleBackButtonClick() {
         Alert.alert(
-            'Retourner',
+            'Annuler',
             "Voulez-vous vraiment annuler l'inscription?",
             [
                 {

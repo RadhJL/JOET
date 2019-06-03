@@ -475,7 +475,7 @@ class Commander extends Component {
                                     }} >
                                         <Card >
                                             <CardItem style={{ backgroundColor: this.state.Dejeuner == true ? '#FF2E2A' : 'white' }} button onPress={() => this.Dejeuner()}>
-                                                <Text style={{ color: this.state.Dejeuner == true ? 'white' : 'red', fontWeight: 'bold' }}>Dejeuner</Text>
+                                                <Text style={{ color: this.state.Dejeuner == true ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Dejeuner</Text>
                                             </CardItem>
                                         </Card>
                                         {this.state.Line1 == true ?
@@ -700,7 +700,7 @@ class Commander extends Component {
                                         <FontAwesome name="money" style={{ fontSize: 15, color: 'green' }} />
                                     </Text>
                                     {/* <View style={{ paddingTop: 10 }}>
-                                    <Button style={{ backgroundColor: 'red', width: styles.dim.width - styles.dim.width / 13 }} full onPress={() => this.Confirmer()}><Text style={{ fontWeight: 'bold', color: 'white' }} >Confirmer</Text></Button>
+                                    <Button style={{ backgroundColor: '#FF2E2A', width: styles.dim.width - styles.dim.width / 13 }} full onPress={() => this.Confirmer()}><Text style={{ fontWeight: 'bold', color: 'white' }} >Confirmer</Text></Button>
                                 </View> */}
                                 </View>
                             </Form>

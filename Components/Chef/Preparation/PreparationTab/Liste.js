@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    StyleSheet, ScrollView, RefreshControl
+    StyleSheet, ScrollView, RefreshControl,Dimensions
 } from "react-native";
 import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Card, CardItem } from 'native-base'
 import * as firebase from 'firebase'
+import { Ionicons } from '@expo/vector-icons'
 
 var Plat = [require('../../../../assets/Kosksi.jpg'), require('../../../../assets/Makrouna1.jpg'), require('../../../../assets/Rouz.jpg')]
 let IdCommande1 = ""
@@ -97,52 +98,54 @@ class Liste extends Component {
     renderAbonnement1() {
         return (
             <View>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Aujourd'hui</Text>
+                <View style={{ justifyContent: 'center', paddingTop: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>Aujourd'hui</Text>
                 </View>
-                {this.state.Plats1.map((Data, Ind) => {
-                    if (Data.IdCommande === IdCommande1 && Ind != 0) {
+                <Card>
+                    {this.state.Plats1.map((Data, Ind) => {
+                        if (Data.IdCommande === IdCommande1 && Ind != 0) {
 
-                    } else {
-                        IdCommande1 = Data.IdCommande
-                        return (
-                            <List style={{}} key={Ind}>
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
-                                    </Left>
-                                    <Body >
-                                        <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
-                                            <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
-                                        </View>
+                        } else {
+                            IdCommande1 = Data.IdCommande
+                            return (
+                                <List style={{}} key={Ind}>
+                                    <ListItem thumbnail>
+                                        <Left>
+                                            <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
+                                        </Left>
+                                        <Body >
+                                            <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                            </View>
 
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
-                                            </Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
-                                            <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Livreur {" "}</Text>
-                                            <Text style={{ fontWeight: 'bold' }}>{Data.NomLivreur}</Text>
-                                        </View>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'red' }}>Details</Text>
-                                        </Button>
-                                    </Right>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Livreur {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.NomLivreur}</Text>
+                                            </View>
+                                            <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
+                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
+                                            </Button>
+                                        </Right>
 
-                                </ListItem>
-                            </List>
-                        )
+                                    </ListItem>
+                                </List>
+                            )
+                        }
+
+                    })
                     }
-
-                })
-                }
+                </Card>
             </View>
         )
 
@@ -151,16 +154,71 @@ class Liste extends Component {
         return (
             <View>
 
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Demain</Text>
+                <View style={{ justifyContent: 'center', paddingTop: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>Demain</Text>
                 </View>
-                {
+                <Card>
+                    {
 
-                    this.state.Plats2.map((Data, Ind) => {
-                        if (Data.IdCommande === IdCommande2 && Ind != 0) {
+                        this.state.Plats2.map((Data, Ind) => {
+                            if (Data.IdCommande === IdCommande2 && Ind != 0) {
+
+                            } else {
+                                IdCommande2 = Data.IdCommande
+                                return (
+                                    <List key={Ind}>
+                                        <ListItem thumbnail>
+                                            <Left>
+                                                <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
+                                            </Left>
+                                            <Body >
+                                                <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                                    <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                                </View>
+
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                                    <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ color: 'gray', fontWeight: 'bold' }}>Livreur {" "}</Text>
+                                                    <Text style={{ fontWeight: 'bold' }}>{Data.NomLivreur}</Text>
+                                                </View>
+                                                <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
+                                            </Body>
+                                            <Right>
+                                                <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
+                                                </Button>
+                                            </Right>
+
+                                        </ListItem>
+                                    </List>
+                                )
+                            }
+                        })
+                    }
+                </Card>
+            </View>
+        )
+
+    }
+    renderAbonnement3() {
+        return (
+            <View>
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF2E2A' }}>{this.state.Day3.substr(0, 11)}</Text>
+                </View>
+                <Card>
+                    {this.state.Plats3.map((Data, Ind) => {
+                        if (Data.IdCommande === IdCommande3 && Ind != 0) {
 
                         } else {
-                            IdCommande2 = Data.IdCommande
+                            IdCommande3 = Data.IdCommande
                             return (
                                 <List key={Ind}>
                                     <ListItem thumbnail>
@@ -188,7 +246,7 @@ class Liste extends Component {
                                         </Body>
                                         <Right>
                                             <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                                <Text style={{ fontWeight: 'bold', color: 'red' }}>Details</Text>
+                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: '#FF2E2A' }} name="ios-information-circle" /></Text>
                                             </Button>
                                         </Right>
 
@@ -197,59 +255,8 @@ class Liste extends Component {
                             )
                         }
                     })
-                }
-            </View>
-        )
-
-    }
-    renderAbonnement3() {
-        return (
-            <View>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>{this.state.Day3.substr(0, 11)}</Text>
-                </View>
-                {this.state.Plats3.map((Data, Ind) => {
-                    if (Data.IdCommande === IdCommande3 && Ind != 0) {
-
-                    } else {
-                        IdCommande3 = Data.IdCommande
-                        return (
-                            <List key={Ind}>
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
-                                    </Left>
-                                    <Body >
-                                        <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
-                                            <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
-                                            </Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
-                                            <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Livreur {" "}</Text>
-                                            <Text style={{ fontWeight: 'bold' }}>{Data.NomLivreur}</Text>
-                                        </View>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'red' }}>Details</Text>
-                                        </Button>
-                                    </Right>
-
-                                </ListItem>
-                            </List>
-                        )
                     }
-                })
-                }
+                </Card>
             </View>
         )
 
@@ -265,7 +272,10 @@ class Liste extends Component {
                     {this.state.Plats2.length > 0 ? this.renderAbonnement2() : console.log()}
                     {this.state.Plats3.length > 0 ? this.renderAbonnement3() : console.log()}
                     {(this.state.Plats1.length > 0 || this.state.Plats2.length > 0 || this.state.Plats3.length) > 0 ?
-                        console.log() : <View style={{ justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontWeight: 'bold', fontSize: 20 }}>Pas de livraison</Text></View>}
+                        console.log() : 
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: styles.dim.height - styles.dim.height / 10 }}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 15, color: 'gray' }}>Pas de commande en cours</Text>
+                        </View>                        }
                 </Content>
 
             </Container>
@@ -281,5 +291,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    dim: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
     }
 });

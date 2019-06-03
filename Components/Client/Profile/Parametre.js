@@ -12,13 +12,15 @@ class Parametre extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            wait: true
+            wait: true,
+            Id: ''
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
 
     async componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        this.setState({ Id: await firebase.auth().currentUser.uid })
         this.setState({ wait: false })
     }
 
@@ -30,8 +32,6 @@ class Parametre extends Component {
         this.props.navigation.goBack(null)
         return true
     }
-
-
 
     async SignOut() {
         try {
@@ -55,18 +55,34 @@ class Parametre extends Component {
                         alert("Vous avez commandes en cours")
                     }
                 })
+            if (flag == false) {
+                var that = this
+                that.setState({ wait: true })
+                await firebase.auth().currentUser.delete().then(async function () {
+                    await firebase.database().ref("Client/" + that.state.Id + "/").remove();
+                    await firebase.database().ref("Users/" + that.state.Id + "/").remove();
+                    await that.setState({ wait: false })
+                    that.props.navigation.navigate('Login')
+                }).catch(function (error) {
+                    alert("Vous devez reconnecter pour supprimer")
+                    console.log(error)
+                });
+            }
+
         }
         catch (error) {
             if (flag == false) {
                 var that = this
+                that.setState({ wait: true })
+
                 await firebase.auth().currentUser.delete().then(async function () {
                     await firebase.database().ref("Client/" + that.state.Id + "/").remove();
                     await firebase.database().ref("Users/" + that.state.Id + "/").remove();
+                    await that.setState({ wait: false })
                     that.props.navigation.navigate('Login')
-
                 }).catch(function (error) {
+                    alert("Vous devez reconnecter pour supprimer")
                     console.log(error)
-
                 });
             }
         }
@@ -77,7 +93,7 @@ class Parametre extends Component {
             <Container>
                 {this.state.wait == true ?
                     <ActivityIndicator /> :
-                    <Container>
+                    <Container style={{ backgroundColor: '#FF2E2A' }}>
                         <Header style={{ height: styles.dim.height / 8, paddingTop: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF2E2A' }}>
                             <Left style={{ flex: 1 }}>
                                 <Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'white' }} name="arrow-back"></Icon></Button>
@@ -92,8 +108,8 @@ class Parametre extends Component {
                             <View style={{ height: styles.dim.height, justifyContent: 'space-around' }}>
 
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={{ fontSize: 30, fontWeight: 'bold', color: '#FF2E2A', }}>JOET?</Text>
-                                    <Text style={{ fontSize: 15,fontWeight:'bold' }}>Mangez, comme chez vous!</Text>
+                                    <Text style={{ fontSize: 35, fontWeight: 'bold', color: 'white', }}>JOET?</Text>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', paddingTop: 10 }}>Mangez, comme chez vous!</Text>
                                 </View>
 
                                 <View>
@@ -110,7 +126,7 @@ class Parametre extends Component {
                                                 { text: 'OK', onPress: () => this.SignOut() },
                                             ],
                                             { cancelable: false },
-                                        )}><Label style={{ fontWeight: 'bold', color: 'red' }}>Déconnecter</Label></Button>
+                                        )}><Label style={{ fontWeight: 'bold', color: '#FF2E2A' }}>Déconnecter</Label></Button>
                                     </Card>
 
                                     <Card style={{}}>
@@ -126,7 +142,7 @@ class Parametre extends Component {
                                                 { text: 'OK', onPress: () => this.DeleteAccount() },
                                             ],
                                             { cancelable: false },
-                                        )}><Label style={{ fontWeight: 'bold', color: 'red' }}>Supprimer compte</Label></Button>
+                                        )}><Label style={{ fontWeight: 'bold', color: '#FF2E2A' }}>Supprimer compte</Label></Button>
                                     </Card>
                                 </View>
                             </View>
@@ -134,6 +150,7 @@ class Parametre extends Component {
                     </Container>
                 }
             </Container>
+
         );
     }
 }

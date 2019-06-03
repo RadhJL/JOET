@@ -32,7 +32,7 @@ class Modification extends Component {
 
     handleBackButtonClick() {
         Alert.alert(
-            'Retourn',
+            'Return',
             'Voulez-vous vraiment retourner?',
             [
                 {
