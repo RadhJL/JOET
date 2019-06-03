@@ -4,47 +4,56 @@ import {
     Text,
     StyleSheet
 } from "react-native";
-import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right } from 'native-base'
-
-class ProfileLivreur extends Component {
+import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Icon } from 'native-base'
+import * as firebase from 'firebase'
+import { AntDesign } from '@expo/vector-icons'
+import ActivityIndicator from './../../../ActivityIndicator'
+class ProfileChef extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            Profile: {}
+            Profile: {},
+            Adresse:"",
+            wait: true
         }
     }
     async   componentDidMount() {
-        console.log(this.props.navigation.getParam('Profile'))
-        this.setState({ Profile: this.props.navigation.getParam('Profile') })
+        var that = this
+        await firebase.database().ref('Client/' + this.props.navigation.getParam('IdClient')).once('value', async function (snap) {
+            await that.setState({ Profile: snap.val() })
+        })
+        this.setState({ wait: false })
     }
 
     render() {
         return (
             <Container>
-                <Content>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Thumbnail large rounded source={{ uri:this.state.Profile.PhotoUrl}}></Thumbnail>
-                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{this.state.Profile.Nom}</Text>
-                    </View>
-                    <View style={{ paddingTop: 30 }}>
-                        <Text>Numero: {this.state.Profile.Numero}</Text>
-                        <Text>{this.state.Profile.Commandes} Commande(s) faite</Text>
-                    </View>
-                    <Text style={{ paddingTop: 30, fontWeight: 'bold', fontSize: 15 }}>Adresse</Text>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text>{this.state.Profile.Adresse1} </Text>
-                        <Text>{this.state.Profile.Adresse2} </Text>
-                    </View>
-                    <View>
-                        <Button full onPress={() => this.props.navigation.goBack(null)}><Text style={{fontWeight:'bold',color:'white'}}>Return</Text></Button>
-                    </View>
-                </Content>
+                {this.state.wait == true ?
+                    <ActivityIndicator></ActivityIndicator>
+                    :
+                    <Content>
+                        <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
+                            <Body></Body>
+                            <Right></Right>
+                        </Header>
+                        <Content>
+                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                <Thumbnail large rounded source={{ uri: this.state.Profile.PhotoUrl}}></Thumbnail>
+                                <Text style={{ fontWeight: 'bold', fontSize: 20, paddingTop: 10 }}>{this.state.Profile.Nom}</Text>
+
+                                <Text style={{ paddingTop: 10 }}>{this.state.Profile.Commandes} Commande(s) faite</Text>
+                            </View>
+                        </Content>
+                    </Content>
+                }
             </Container>
+
 
         );
     }
 }
-export default ProfileLivreur;
+export default ProfileChef;
 
 const styles = StyleSheet.create({
     container: {

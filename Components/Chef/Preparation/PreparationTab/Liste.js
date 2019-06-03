@@ -4,11 +4,13 @@ import {
     Text,
     StyleSheet, ScrollView, RefreshControl
 } from "react-native";
-import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right } from 'native-base'
+import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Card, CardItem } from 'native-base'
 import * as firebase from 'firebase'
 
 var Plat = [require('../../../../assets/Kosksi.jpg'), require('../../../../assets/Makrouna1.jpg'), require('../../../../assets/Rouz.jpg')]
-
+let IdCommande1 = ""
+let IdCommande2 = ""
+let IdCommande3 = ""
 class Liste extends Component {
     constructor(props) {
         super(props)
@@ -21,63 +23,71 @@ class Liste extends Component {
             Day2: '',
             Day3: '',
             Numero: '',
+            Refresh: false
         }
     }
 
-    onRefresh = async (Day1, Day2, Day3) => {
+    onRefresh = async (Day1, Day2, Day3, ch) => {
         var that = this
-        await firebase.database().ref('Commandes/').orderByChild('IdChef').equalTo(this.state.Id)
-            .on('child_added', function (snap) {
-                if (snap.val().Date.substr(0, 15) === Day1.substr(0, 15) && snap.val().Etat === "En Preparation") {
+        if (ch === "1")
+            await (this.state.Plats1.length == 0 && this.state.Plats2.length == 0 && this.state.Plats3.length == 0)
+
+        await firebase.database().ref('Commandes/').orderByChild('IdChefSortDate')
+            .startAt(this.state.Id).endAt(this.state.Id + '\uf8ff')
+            .on('child_added', async function (snap) {
+                if (snap.val().Date.substr(0, 15) === Day1.substr(0, 15)) {
                     var newData = [...that.state.Plats1]
                     newData.push(snap.val())
-                    that.setState({ Plats1: newData })
-                } else if (snap.val().Date.substr(0, 15) === Day2.substr(0, 15) && snap.val().Etat === "En Preparation") {
+                    await that.setState({ Plats1: newData })
+                } else if (snap.val().Date.substr(0, 15) === Day2.substr(0, 15)) {
                     var newData = [...that.state.Plats2]
                     newData.push(snap.val())
-                    that.setState({ Plats2: newData })
+                    await that.setState({ Plats2: newData })
                 }
-                else if (snap.val().Date.substr(0, 15) === Day3.substr(0, 15) && snap.val().Etat === "En Preparation") {
+                else if (snap.val().Date.substr(0, 15) === Day3.substr(0, 15)) {
                     var newData = [...that.state.Plats3]
                     newData.push(snap.val())
-                    that.setState({ Plats3: newData })
+                    await that.setState({ Plats3: newData })
                 }
             })
 
 
     }
     async componentDidMount() {
-        await firebase.auth().onAuthStateChanged((user) => {
+        var that = this
+        await firebase.auth().onAuthStateChanged(async (user) => {
             if (user == null) {
                 console.log('Null user')
             } else {
-                this.setState({ Plats1: [], Plats2: [], Plats3: [], })
+                this.setState({ Plats1: [], Plats2: [], Plats3: [] })
                 var Day1 = (new Date(new Date().getFullYear().toString(), (new Date().getMonth()).toString(), (new Date().getDate()).toString())).toString()
                 var Day2 = (new Date(new Date().getFullYear().toString(), (new Date().getMonth()).toString(), (new Date().getDate() + 1).toString())).toString()
                 var Day3 = (new Date(new Date().getFullYear().toString(), (new Date().getMonth()).toString(), (new Date().getDate() + 2).toString())).toString()
                 this.setState({ Day1: Day1 }); this.setState({ Day2: Day2 }); this.setState({ Day3: Day3 })
-                var uid =  user.uid
+                var uid = user.uid
                 this.setState({ Id: uid })
-                var that = this
-                 firebase.database().ref('Commandes/').orderByChild('IdChef').equalTo(uid)
-                    .on('child_changed', function (snap) {
-                        that.setState({ Plats1: [], Plats2: [], Plats3: [], })
-                        that.onRefresh(Day1, Day2, Day3)
-                    })
-                 firebase.database().ref('Commandes/').orderByChild('IdChef').equalTo(uid)
-                    .on('child_removed', function (snap) {
-                        that.setState({ Plats1: [], Plats2: [], Plats3: [], })
-                        that.onRefresh(Day1, Day2, Day3)
 
+                await firebase.database().ref('Commandes/').orderByChild('IdChefSortDate')
+                    .startAt(uid).endAt(uid + '\uf8ff')
+                    .on('child_changed', async function (snap) {
+                        await that.setState({ Plats1: [], Plats2: [], Plats3: [] })
+                        await that.onRefresh(Day1, Day2, Day3, "1")
                     })
-                that.onRefresh(Day1, Day2, Day3)
 
+                await firebase.database().ref('Commandes/').orderByChild('IdChefSortDate')
+                    .startAt(uid).endAt(uid + '\uf8ff')
+                    .on('child_removed', async function (snap) {
+                        await that.setState({ Plats1: [], Plats2: [], Plats3: [], })
+                        await that.onRefresh(Day1, Day2, Day3, "1")
+                    })
+
+                this.onRefresh(Day1, Day2, Day3, "0")
             }
         })
     }
 
     choose(x) {
-        if (x === "Kosksi")
+        if (x === "Couscous")
             return 0
         if (x == "Makrouna")
             return 1
@@ -87,28 +97,51 @@ class Liste extends Component {
     renderAbonnement1() {
         return (
             <View>
-                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Aujourd'hui</Text>
-                {
-                    this.state.Plats1.map((Data, Ind) => {
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Aujourd'hui</Text>
+                </View>
+                {this.state.Plats1.map((Data, Ind) => {
+                    if (Data.IdCommande === IdCommande1 && Ind != 0) {
+
+                    } else {
+                        IdCommande1 = Data.IdCommande
                         return (
-                            <List key={Ind}>
+                            <List style={{}} key={Ind}>
                                 <ListItem thumbnail>
                                     <Left>
                                         <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
                                     </Left>
-                                    <Body>
-                                        <Text style={{ fontWeight: 'bold' }}>{Data.Qte}x {Data.Plat} </Text>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>à {Data.Date.substr(16, 5)}H</Text>
+                                    <Body >
+                                        <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                            <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                        </View>
+
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                            </Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                            <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Livreur {" "}</Text>
+                                            <Text style={{ fontWeight: 'bold' }}>{Data.NomLivreur}</Text>
+                                        </View>
+                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
                                     </Body>
                                     <Right>
                                         <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'gray' }}>Voir Détails</Text>
+                                            <Text style={{ fontWeight: 'bold', color: 'red' }}>Details</Text>
                                         </Button>
                                     </Right>
+
                                 </ListItem>
                             </List>
                         )
-                    })
+                    }
+
+                })
                 }
             </View>
         )
@@ -117,29 +150,52 @@ class Liste extends Component {
     renderAbonnement2() {
         return (
             <View>
-                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Demain</Text>
 
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Demain</Text>
+                </View>
                 {
 
                     this.state.Plats2.map((Data, Ind) => {
-                        return (
-                            <List key={Ind}>
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
-                                    </Left>
-                                    <Body>
-                                        <Text style={{ fontWeight: 'bold' }}>{Data.Qte}x {Data.Plat}</Text>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>à {Data.Date.substr(16, 5)}H</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'gray' }}>Voir Détails</Text>
-                                        </Button>
-                                    </Right>
-                                </ListItem>
-                            </List>
-                        )
+                        if (Data.IdCommande === IdCommande2 && Ind != 0) {
+
+                        } else {
+                            IdCommande2 = Data.IdCommande
+                            return (
+                                <List key={Ind}>
+                                    <ListItem thumbnail>
+                                        <Left>
+                                            <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
+                                        </Left>
+                                        <Body >
+                                            <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Livreur {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.NomLivreur}</Text>
+                                            </View>
+                                            <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
+                                                <Text style={{ fontWeight: 'bold', color: 'red' }}>Details</Text>
+                                            </Button>
+                                        </Right>
+
+                                    </ListItem>
+                                </List>
+                            )
+                        }
                     })
                 }
             </View>
@@ -149,28 +205,50 @@ class Liste extends Component {
     renderAbonnement3() {
         return (
             <View>
-                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Le {this.state.Day3.substr(0, 11)}</Text>
-                {
-                    this.state.Plats3.map((Data, Ind) => {
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>{this.state.Day3.substr(0, 11)}</Text>
+                </View>
+                {this.state.Plats3.map((Data, Ind) => {
+                    if (Data.IdCommande === IdCommande3 && Ind != 0) {
+
+                    } else {
+                        IdCommande3 = Data.IdCommande
                         return (
                             <List key={Ind}>
                                 <ListItem thumbnail>
                                     <Left>
                                         <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
                                     </Left>
-                                    <Body>
-                                        <Text style={{ fontWeight: 'bold' }}>{Data.Qte}x {Data.Plat}</Text>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>à {Data.Date.substr(16, 5)}H</Text>
+                                    <Body >
+                                        <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                            <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                        </View>
+
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                            </Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                            <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={{ color: 'gray', fontWeight: 'bold' }}>Livreur {" "}</Text>
+                                            <Text style={{ fontWeight: 'bold' }}>{Data.NomLivreur}</Text>
+                                        </View>
+                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
                                     </Body>
                                     <Right>
                                         <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'gray' }}>Voir Détails</Text>
+                                            <Text style={{ fontWeight: 'bold', color: 'red' }}>Details</Text>
                                         </Button>
                                     </Right>
+
                                 </ListItem>
                             </List>
                         )
-                    })
+                    }
+                })
                 }
             </View>
         )
@@ -178,16 +256,16 @@ class Liste extends Component {
     }
 
     render() {
+
         return (
 
             <Container>
                 <Content>
-
                     {this.state.Plats1.length > 0 ? this.renderAbonnement1() : console.log()}
                     {this.state.Plats2.length > 0 ? this.renderAbonnement2() : console.log()}
                     {this.state.Plats3.length > 0 ? this.renderAbonnement3() : console.log()}
                     {(this.state.Plats1.length > 0 || this.state.Plats2.length > 0 || this.state.Plats3.length) > 0 ?
-                        console.log() : <View style={{ justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontWeight: 'bold', fontSize: 20 }}>Pas de commande</Text></View>}
+                        console.log() : <View style={{ justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontWeight: 'bold', fontSize: 20 }}>Pas de livraison</Text></View>}
                 </Content>
 
             </Container>

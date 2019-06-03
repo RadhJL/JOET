@@ -10,6 +10,7 @@ const app = createStackNavigator({
     ProfileLivreur:ProfileLivreur
   }, {
       headerMode: 'none'
+      
     }
   )
   export default AbonnementsNavigator = createAppContainer(app)

@@ -9,13 +9,16 @@ import AddLivreur from './Components/NewAccount/AddAccount/AddLivreur'
 import AddChef from './Components/NewAccount/AddAccount/AddChef'
 import ClientTab from './Components/Client/ClientNavigator'
 import ModificationClient from './Components/Client/Profile/Modification'
+import ParametreClient from './Components/Client/Profile/Parametre'
 import TousLesPlats from './Components/Client/Plats/TousLesPlats'
 import AffichePlat from './Components/Client/Plats/Commande/AffichagePlat'
 import Commander from './Components/Client/Plats/Commande/Commande'
 import LivreurTab from './Components/Livreur/LivreurNavigator'
 import ModificationLivreur from './Components/Livreur/Profile/Modification'
+import ParametreLivreur from './Components/Livreur/Profile/Parametre'
 import ChefTab from './Components/Chef/ChefNavigator'
 import ModificationChef from './Components/Chef/Profile/Modification'
+import ParametreChef from './Components/Chef/Profile/Parametre'
 import Timer from './Timer'
 import _ from 'lodash';
 YellowBox.ignoreWarnings(['Setting a timer']);
@@ -26,18 +29,19 @@ console.warn = message => {
   }
 }
 
-  var config = {
-    apiKey: "AIzaSyD4IfSiKhoAjTY2xyCh8o1Ap4e11aDNNPQ",
-    authDomain: "joet-for-ayaandyass.firebaseapp.com",
-    databaseURL: "https://joet-for-ayaandyass.firebaseio.com",
-    projectId: "joet-for-ayaandyass",
-    storageBucket: "joet-for-ayaandyass.appspot.com",
-    messagingSenderId: "593845611021"
-  };
-  firebase.initializeApp(config);
+var config = {
+  apiKey: "AIzaSyB5r_knTurXCWVHrvE3h2o5gVbDyzoD0Ic",
+  authDomain: "joet-7a3c2.firebaseapp.com",
+  databaseURL: "https://joet-7a3c2.firebaseio.com",
+  projectId: "joet-7a3c2",
+  storageBucket: "joet-7a3c2.appspot.com",
+  messagingSenderId: "885924455080"
+};
+firebase.initializeApp(config);
 
 const app = createStackNavigator({
-  Acceuil:Acceuil,
+
+  Acceuil: Acceuil,
   Login: Login,
   TypeOfUser: TypeOfUser,
   AddClient: AddClient,
@@ -45,19 +49,27 @@ const app = createStackNavigator({
   AddChef: AddChef,
 
   ClientTab: ClientTab,
-  ModificationClient:ModificationClient,
-  TousLesPlats:TousLesPlats,
-  
+  ModificationClient: ModificationClient,
+  ParametreClient: ParametreClient,
+
+  TousLesPlats: TousLesPlats,
   AffichePlat: AffichePlat,
   Commander: Commander,
-  
-  LivreurTab: LivreurTab,
-  ModificationLivreur:ModificationLivreur,
-  ChefTab: ChefTab,
-  ModificationChef:ModificationChef
 
-}, {
-    headerMode: 'none'
+  LivreurTab: LivreurTab,
+  ModificationLivreur: ModificationLivreur,
+  ParametreLivreur: ParametreLivreur,
+
+  ChefTab: ChefTab,
+  ModificationChef: ModificationChef,
+  ParametreChef: ParametreChef,
+
+},
+  {
+    headerMode: 'none',
+    defaultNavigationOptions: {
+      gesturesEnabled: false,
+    },
   }
 )
 export default App = createAppContainer(app)

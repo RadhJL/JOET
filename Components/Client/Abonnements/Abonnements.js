@@ -2,29 +2,49 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    StyleSheet
+    StyleSheet,BackHandler
 } from "react-native";
-import { Container, Header, Tab, Tabs, ScrollableTab, Button, TabHeading } from 'native-base';
+import { Container, Header, Tab, Tabs, ScrollableTab, Button, TabHeading, Content, Icon } from 'native-base';
 import AbonnementsNavigator from './AbonnementsTab/AbonnementsNavigator'
 import HistoriqueNavigator from './HistoriqueTab/HistoriqueNavigator'
+import { Feather } from '@expo/vector-icons';
 class Abonnements extends Component {
     constructor(props) {
         super(props)
+    }
+    static navigationOptions = {
+        tabBarIcon: ({ tintColor }) => (
+            <Feather name="inbox" style={{ color: tintColor, fontSize: 30 }} />
+        )
+    }
+    async componentDidMount() {
+        var that = this
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+    handleBackButtonClick() {
+        BackHandler.exitApp()
+        return true;
     }
     render() {
         return (
             <Container>
 
-                {/* <Header hasTabs /> */}
-                <Tabs style={{ paddingTop: 24 }} renderTabBar={() => <ScrollableTab/>}>
-                    <Tab heading="Abonnements">
-                        <AbonnementsNavigator  />
+                {/* <Header style={{ backgroundColor: '#3fb0ac' }} hasTabs/> */}
+                {/* <Text style={{ fontWeight: 'bold',color:'red' }}>Abonnements</Text> */}
+                <Tabs
+
+                    style={{ paddingTop: 20, backgroundColor: '#FF2E2A' }} renderTabBar={() => <ScrollableTab style={{ backgroundColor: '#FF2E2A' }} />}>
+                    <Tab heading={<TabHeading style={{ backgroundColor: '#FF2E2A' }}><Text style={{ fontWeight: 'bold', color: 'white', fontSize: 15 }}>En Cours</Text></TabHeading>}  >
+                        <AbonnementsNavigator />
                     </Tab>
-                    <Tab heading="Historique">
+                    <Tab heading={<TabHeading style={{ backgroundColor: '#FF2E2A' }}><Text style={{ fontWeight: 'bold', color: 'white', fontSize: 15 }}>Historique</Text></TabHeading>}  >
                         <HistoriqueNavigator />
                     </Tab>
                 </Tabs>
-
             </Container>
         );
     }

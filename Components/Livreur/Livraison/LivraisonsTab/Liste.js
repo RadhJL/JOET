@@ -4,11 +4,13 @@ import {
     Text,
     StyleSheet, ScrollView, RefreshControl
 } from "react-native";
-import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right } from 'native-base'
+import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Card, CardItem } from 'native-base'
 import * as firebase from 'firebase'
-
+import { Ionicons } from '@expo/vector-icons'
 var Plat = [require('../../../../assets/Kosksi.jpg'), require('../../../../assets/Makrouna1.jpg'), require('../../../../assets/Rouz.jpg')]
-
+let IdCommande1 = ""
+let IdCommande2 = ""
+let IdCommande3 = ""
 class Liste extends Component {
     constructor(props) {
         super(props)
@@ -30,22 +32,22 @@ class Liste extends Component {
         if (ch === "1")
             await (this.state.Plats1.length == 0 && this.state.Plats2.length == 0 && this.state.Plats3.length == 0)
 
-        await firebase.database().ref('Commandes/').orderByChild('IdLivreur').equalTo(this.state.Id)
-            .on('child_added', function (snap) {
-
+        await firebase.database().ref('Commandes/').orderByChild('IdLivreurSortDate')
+            .startAt(this.state.Id).endAt(this.state.Id + '\uf8ff')
+            .on('child_added', async function (snap) {
                 if (snap.val().Date.substr(0, 15) === Day1.substr(0, 15)) {
                     var newData = [...that.state.Plats1]
                     newData.push(snap.val())
-                    that.setState({ Plats1: newData })
+                    await that.setState({ Plats1: newData })
                 } else if (snap.val().Date.substr(0, 15) === Day2.substr(0, 15)) {
                     var newData = [...that.state.Plats2]
                     newData.push(snap.val())
-                    that.setState({ Plats2: newData })
+                    await that.setState({ Plats2: newData })
                 }
                 else if (snap.val().Date.substr(0, 15) === Day3.substr(0, 15)) {
                     var newData = [...that.state.Plats3]
                     newData.push(snap.val())
-                    that.setState({ Plats3: newData })
+                    await that.setState({ Plats3: newData })
                 }
             })
 
@@ -53,7 +55,7 @@ class Liste extends Component {
     }
     async componentDidMount() {
         var that = this
-        await firebase.auth().onAuthStateChanged((user) => {
+        await firebase.auth().onAuthStateChanged(async (user) => {
             if (user == null) {
                 console.log('Null user')
             } else {
@@ -65,16 +67,18 @@ class Liste extends Component {
                 var uid = user.uid
                 this.setState({ Id: uid })
 
-                firebase.database().ref('Commandes/').orderByChild('IdLivreur').equalTo(uid)
-                    .on('child_changed', function (snap) {
-                        that.setState({ Plats1: [], Plats2: [], Plats3: [] })
-                        that.onRefresh(Day1, Day2, Day3, "1")
+                await firebase.database().ref('Commandes/').orderByChild('IdLivreurSortDate')
+                    .startAt(uid).endAt(uid + '\uf8ff')
+                    .on('child_changed', async function (snap) {
+                        await that.setState({ Plats1: [], Plats2: [], Plats3: [] })
+                        await that.onRefresh(Day1, Day2, Day3, "1")
                     })
 
-                firebase.database().ref('Commandes/').orderByChild('IdLivreur').equalTo(uid)
-                    .on('child_removed', function (snap) {
-                        that.setState({ Plats1: [], Plats2: [], Plats3: [], })
-                        that.onRefresh(Day1, Day2, Day3, "1")
+                await firebase.database().ref('Commandes/').orderByChild('IdLivreurSortDate')
+                    .startAt(uid).endAt(uid + '\uf8ff')
+                    .on('child_removed', async function (snap) {
+                        await that.setState({ Plats1: [], Plats2: [], Plats3: [], })
+                        await that.onRefresh(Day1, Day2, Day3, "1")
                     })
 
                 this.onRefresh(Day1, Day2, Day3, "0")
@@ -83,7 +87,7 @@ class Liste extends Component {
     }
 
     choose(x) {
-        if (x === "Kosksi")
+        if (x === "Couscous")
             return 0
         if (x == "Makrouna")
             return 1
@@ -93,32 +97,64 @@ class Liste extends Component {
     renderAbonnement1() {
         return (
             <View>
-                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Aujourd'hui</Text>
-                {
-                    this.state.Plats1.map((Data, Ind) => {
-                        return (
-                            <List key={Ind}>
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
-                                    </Left>
-                                    <Body>
+                <View style={{ justifyContent: 'center', paddingLeft: 10, paddingTop: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Aujourd'hui</Text>
+                </View>
+                <Card>
+                    {this.state.Plats1.map((Data, Ind) => {
+                        if (Data.IdCommande === IdCommande1 && Ind != 0) {
 
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>Chef {Data.Adresse1Chef} {Data.Adresse2Chef} </Text>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>Client {Data.Adresse1Client} {Data.Adresse2Client}</Text>
-                                        <Text style={{ fontWeight: 'bold' }}>à {Data.Date.substr(16, 5)}</Text>
-                                        <Text style={{ fontWeight: 'bold' }}>{Data.Qte}x {Data.Plat}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'gray' }}>Voir Details</Text>
-                                        </Button>
-                                    </Right>
-                                </ListItem>
-                            </List>
-                        )
+                        } else {
+                            IdCommande1 = Data.IdCommande
+                            return (
+                                <List key={Ind}>
+                                    <ListItem thumbnail>
+                                        <Left>
+                                            <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
+                                        </Left>
+                                        <Body >
+                                            <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row', paddingTop: 8 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Du chef {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.NomChef}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Au client {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.NomClient}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
+                                                {Data.Livraison == "Gratuite" ?
+                                                    <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'gray' }}> INCLUS</Text> :
+                                                    console.log()
+                                                }
+                                            </View>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
+                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                            </Button>
+                                        </Right>
+
+                                    </ListItem>
+                                </List>
+                            )
+                        }
+
                     })
-                }
+                    }
+                </Card>
             </View>
         )
 
@@ -126,34 +162,66 @@ class Liste extends Component {
     renderAbonnement2() {
         return (
             <View>
-                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Demain</Text>
 
-                {
+                <View style={{ justifyContent: 'center', paddingLeft: 10, paddingTop: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>Demain</Text>
+                </View>
+                <Card>
+                    {
 
-                    this.state.Plats2.map((Data, Ind) => {
-                        return (
-                            <List key={Ind}>
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
-                                    </Left>
-                                    <Body>
+                        this.state.Plats2.map((Data, Ind) => {
+                            if (Data.IdCommande === IdCommande2 && Ind != 0) {
 
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>Chef {Data.Adresse1Chef} {Data.Adresse2Chef} </Text>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>Client {Data.Adresse1Client} {Data.Adresse2Client}</Text>
-                                        <Text style={{ fontWeight: 'bold' }}>à {Data.Date.substr(16, 5)}</Text>
-                                        <Text style={{ fontWeight: 'bold' }}>{Data.Qte}x {Data.Plat}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'gray' }}>Voir Details</Text>
-                                        </Button>
-                                    </Right>
-                                </ListItem>
-                            </List>
-                        )
-                    })
-                }
+                            } else {
+                                IdCommande2 = Data.IdCommande
+                                return (
+                                    <List key={Ind}>
+                                        <ListItem thumbnail>
+                                            <Left>
+                                                <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
+                                            </Left>
+                                            <Body >
+                                                <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                                    <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                                </View>
+
+                                                <View style={{ flexDirection: 'row', paddingTop: 8 }}>
+                                                    <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                                    <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ color: 'gray', fontWeight: 'bold' }}>Du chef {" "}</Text>
+                                                    <Text style={{ fontWeight: 'bold' }}>{Data.NomChef}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ color: 'gray', fontWeight: 'bold' }}>Au client {" "}</Text>
+                                                    <Text style={{ fontWeight: 'bold' }}>{Data.NomClient}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
+                                                    {Data.Livraison == "Gratuite" ?
+                                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'gray' }}> INCLUS </Text> :
+                                                        console.log()
+                                                    }
+                                                </View>
+                                            </Body>
+                                            <Right>
+                                                <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
+                                                    <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                                </Button>
+                                            </Right>
+
+                                        </ListItem>
+                                    </List>
+                                )
+                            }
+                        })
+                    }
+                </Card>
             </View>
         )
 
@@ -161,32 +229,63 @@ class Liste extends Component {
     renderAbonnement3() {
         return (
             <View>
-                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Le {this.state.Day3.substr(0, 11)}</Text>
-                {
-                    this.state.Plats3.map((Data, Ind) => {
-                        return (
-                            <List key={Ind}>
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
-                                    </Left>
-                                    <Body>
+                <View style={{ justifyContent: 'center', paddingLeft: 10, paddingTop: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'red' }}>{this.state.Day3.substr(0, 11)}</Text>
+                </View>
+                <Card>
+                    {this.state.Plats3.map((Data, Ind) => {
+                        if (Data.IdCommande === IdCommande3 && Ind != 0) {
 
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>Chef {Data.Adresse1Chef} {Data.Adresse2Chef} </Text>
-                                        <Text note numberOfLines={1} style={{ fontWeight: 'bold' }}>Client {Data.Adresse1Client} {Data.Adresse2Client}</Text>
-                                        <Text style={{ fontWeight: 'bold' }}>à {Data.Date.substr(16, 5)}</Text>
-                                        <Text style={{ fontWeight: 'bold' }}>{Data.Qte}x {Data.Plat}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
-                                            <Text style={{ fontWeight: 'bold', color: 'gray' }}>Voir Details</Text>
-                                        </Button>
-                                    </Right>
-                                </ListItem>
-                            </List>
-                        )
+                        } else {
+                            IdCommande3 = Data.IdCommande
+                            return (
+                                <List key={Ind}>
+                                    <ListItem thumbnail>
+                                        <Left>
+                                            <Thumbnail square source={Plat[this.choose(Data.Plat)]} />
+                                        </Left>
+                                        <Body >
+                                            <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 20, fontStyle: 'italic' }}>{Data.Date.substr(16, 5)}H</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row', paddingTop: 8 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Plat}
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Pour {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.Qte} personne(s)</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Du chef {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.NomChef}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={{ color: 'gray', fontWeight: 'bold' }}>Au client {" "}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{Data.NomClient}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'green' }}>{Data.Etat}</Text>
+                                                {Data.Livraison == "Gratuite" ?
+                                                    <Text note numberOfLines={1} style={{ fontWeight: 'bold', color: 'gray' }}> INCLUS</Text> :
+                                                    console.log()
+                                                }
+                                            </View>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => this.props.navigation.navigate('Details', { 'Data': Data })}>
+                                                <Text style={{ fontWeight: 'bold', color: 'gray' }}><Ionicons style={{ fontSize: 33, color: 'red' }} name="ios-information-circle" /></Text>
+                                            </Button>
+                                        </Right>
+
+                                    </ListItem>
+                                </List>
+                            )
+                        }
                     })
-                }
+                    }
+                </Card>
             </View>
         )
 

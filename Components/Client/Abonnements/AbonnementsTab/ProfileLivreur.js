@@ -4,47 +4,66 @@ import {
     Text,
     StyleSheet
 } from "react-native";
-import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right } from 'native-base'
-
+import { Container, Content, Label, Header, Button, List, ListItem, Thumbnail, Left, Body, Right, Icon,Card } from 'native-base'
+import { AntDesign } from '@expo/vector-icons'
+import ActivityIndicator from './../../../ActivityIndicator'
+import * as firebase from 'firebase'
 class ProfileLivreur extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            Profile: {}
+            Profile: {},
+            wait: true
         }
     }
-    async   componentDidMount() {
-        console.log(this.props.navigation.getParam('Profile'))
-        this.setState({ Profile: this.props.navigation.getParam('Profile') })
+    async componentDidMount() {
+        var that = this
+        await firebase.database().ref('Livreur/' + this.props.navigation.getParam('IdLivreur')).once('value', async function (snap) {
+            await that.setState({ Profile: snap.val() })
+        })
+        this.setState({ wait: false })
+
     }
 
     render() {
         return (
             <Container>
-                <Content>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Thumbnail large rounded source={{ uri:this.state.Profile.PhotoUrl}}></Thumbnail>
-                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{this.state.Profile.Nom}</Text>
-                    </View>
-                    <View style={{ paddingTop: 30 }}>
-                        <Text>Numero: {this.state.Profile.Numero}</Text>
-                        <Text>{this.state.Profile.Commandes} Commande(s) livré</Text>
-                    </View>
-                    <Text style={{ paddingTop: 30, fontWeight: 'bold', fontSize: 15 }}>Se déplace avec</Text>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text>{this.state.Profile.Deplacement} </Text>
-                    </View>
-                    <View style={{ paddingTop: 30 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Travaille</Text>
-                        {this.state.Profile.Shift === "DejeunerEtDinner" ? <Text>Le Dejeuner et Le Diner</Text> : <Text>Le {this.state.Profile.Shift}</Text>}
+                {this.state.wait == true ?
+                    <ActivityIndicator /> :
+                    <Content>
+                        <Header transparent style={{ height: 50, backgroundColor: 'white' }}>
+                            <Left><Button transparent onPress={() => this.props.navigation.goBack(null)}><Icon style={{ color: 'red' }} name="arrow-back"></Icon></Button></Left>
+                            <Body></Body>
+                            <Right></Right>
+                        </Header>
+                        <Content>
+                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                <Thumbnail large rounded source={{ uri: this.state.Profile.PhotoUrl }}></Thumbnail>
+                                <Text style={{ fontWeight: 'bold', fontSize: 25, paddingTop: 10 }}>{this.state.Profile.Nom}</Text>
 
+                                <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.Profile.Rate.Score + " "}</Text>
+                                    <Text style={{ paddingTop: 3 }}><AntDesign style={{ fontSize: 20, color: 'red' }} name="star"></AntDesign></Text>
+                                    <Text style={{ color: 'gray', paddingTop: 4, fontWeight: 'bold' }}>{"  " + this.state.Profile.Rate.Nombre + " "}avis</Text>
+                                </View>
 
-                    </View>
+                                <Text style={{ paddingTop: 10 }}>{this.state.Profile.Commandes} livraison(s) faite</Text>
+                            </View>
 
-                    <View>
-                        <Button full onPress={() => this.props.navigation.goBack(null)}><Text style={{fontWeight:'bold',color:'white'}}>Return</Text></Button>
-                    </View>
-                </Content>
+                            <Card style={{padding:10,marginTop:15}}>
+                                <Text style={{ paddingTop: 20, fontWeight: 'bold', fontSize: 15 }}>Se déplace avec</Text>
+                                <View style={{ paddingTop: 5 }}>
+                                    <Text>{this.state.Profile.Deplacement} </Text>
+                                </View>
+                                <View style={{ paddingTop: 20 }}>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Travaille</Text>
+                                    {this.state.Profile.Shift === "DejeunerEtDinner" ? <Text style={{ paddingTop: 5 }}>Le Dejeuner et Le Diner</Text> : <Text style={{ paddingTop: 5 }}>Le {this.state.Profile.Shift}</Text>}
+                                </View>
+                            </Card>
+                        </Content>
+                    </Content>
+                }
+
             </Container>
 
         );

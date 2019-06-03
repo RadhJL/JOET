@@ -2,14 +2,16 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    StyleSheet, ToastAndroid, Alert, BackHandler
+    StyleSheet,
+    BackHandler,
+    Alert, ToastAndroid, Dimensions, KeyboardAvoidingView, Platform
 } from "react-native";
-import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Form, Input, Label } from 'native-base';
+import { Container, Header, Title, Button, Left, Right, Body, Icon, Label, Input, Content, Form, Picker, ListItem, CheckBox, Card, CardItem, Item } from 'native-base';
 import * as firebase from 'firebase'
+import ActivityIndicator from '../../ActivityIndicator'
 
-let Numero = ''
-let Adresse1 = ''
-let Adresse2 = ''
+
+
 class Modification extends Component {
     constructor(props) {
         super(props)
@@ -18,7 +20,31 @@ class Modification extends Component {
             Numero: '',
             Adresse1: '',
             Adresse2: '',
-            AncienNumero: ''
+            AncienNumero: '',
+
+            DisplayResidence: false,
+            DisplayTravail: false,
+
+            VilleResidence: "",
+            RueResidence: "",
+            PlaqueResidence: "",
+            DetailsResidence: "",
+
+            RueTravail: "",
+            VilleTravail: "",
+            PlaqueTravail: "",
+            DetailsTravail: "",
+
+            Platform: '',
+            Square1: false,
+            Line1: false,
+            Line2: false,
+            Line3: false,
+            Line4: false,
+            Line5: false,
+            Line6: false,
+            Line7: false,
+            wait: true
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
@@ -55,45 +81,69 @@ class Modification extends Component {
             }
         });
 
-
-
         this.setState({ uid: user.uid });
         var that = this
         await firebase.database().ref('Client/' + user.uid).once('value', function (snap) {
-            Numero = snap.val().Numero.toString()
-            Adresse1 = snap.val().Adresse1
-            Adresse2 = snap.val().Adresse2
+
             that.setState({ AncienNumero: snap.val().Numero })
             that.setState({ Numero: snap.val().Numero })
-            that.setState({ Adresse1: snap.val().Adresse1 })
-            that.setState({ Adresse2: snap.val().Adresse2 })
+
+
+            if (snap.val().AdresseResidence != null) {
+                that.setState({ DisplayResidence: true })
+                var array = snap.val().AdresseResidence.split(',')
+                console.log(array)
+                that.setState({ VilleResidence: array[2] })
+                that.setState({ RueResidence: array[1] })
+                that.setState({ PlaqueResidence: array[0] })
+                that.setState({ DetailsResidence: array[3] })
+            }
+            if (snap.val().AdresseTravail != null) {
+                that.setState({ DisplayTravail: true })
+                var array = snap.val().AdresseTravail.split(',')
+                that.setState({ VilleTravail: array[2] })
+                that.setState({ RueTravail: array[1] })
+                that.setState({ PlaqueTravail: array[0] })
+                that.setState({ DetailsTravail: array[3] })
+            }
         })
 
+        this.setState({ wait: false })
     }
-    IsValid(ch) {
-        if (ch.length != 8)
-            return false
 
-        return true
-    }
 
     async Confirmer() {
 
         var that = this
         let rootRef = firebase.database().ref()
-        if (this.IsValid(this.state.Numero) == false) {
-            ToastAndroid.show(
-                "  Numero Contient 8 chiffre!",
-                ToastAndroid.SHORT,
-            );
-        } else if (this.state.Adresse1 === '' || this.state.Adresse2 === '') {
-            ToastAndroid.show(
-                " Adresse Invalide ",
-                ToastAndroid.SHORT,
-            );
-        } else {
-            try {
+        if (this.state.Numero.length < 8 || isNaN(this.state.Numero)) {
+            this.setState({ Line1: true, flag: false })
+        }
+        else if (this.state.DisplayResidence == false && this.state.DisplayTravail == false) {
+            this.setState({ Square1: true, flag: false })
+        }
+        else if (this.state.DisplayResidence == true && (this.state.VilleResidence == "")) {
+            this.setState({ Line2: true, flag: false })
+        }
+        else if (this.state.DisplayResidence == true && (isNaN(this.state.PlaqueResidence) || this.state.PlaqueResidence.length > 3 || this.state.PlaqueResidence.length == 0)) {
+            this.setState({ Line3: true, flag: false })
+        }
+        else if (this.state.DisplayResidence == true && (this.state.RueResidence.length < 5)) {
+            this.setState({ Line4: true, flag: false })
+        }
+        else if (this.state.DisplayTravail == true && (this.state.VilleTravail == "")) {
+            this.setState({ Line5: true, flag: false })
+        }
+        else if (this.state.DisplayTravail == true && (isNaN(this.state.PlaqueTravail) || this.state.PlaqueTravail.length > 3 || this.state.PlaqueTravail.length == 0)) {
+            this.setState({ Line6: true, flag: false })
+        }
+        else if (this.state.DisplayTravail == true && (this.state.RueTravail.length < 5)) {
+            this.setState({ Line7: true, flag: false })
+        }
 
+        else {
+            try {
+                this.setState({ wait: true })
                 await firebase.database().ref('Client/' + that.state.uid).update({
                     Numero: that.state.Numero,
                 })
@@ -111,59 +161,239 @@ class Modification extends Component {
                         }
                     })
 
+                if (this.state.DisplayResidence == true) {
+                    await firebase.database().ref('Client/' + that.state.uid).update({
+                        AdresseResidence: that.state.PlaqueResidence + "," + that.state.RueResidence + "," + that.state.VilleResidence + "," + that.state.DetailsResidence,
+                    })
+                } else {
+                    await firebase.database().ref('Client/' + that.state.uid + "/AdresseResidence").remove()
+                    this.setState({ PlaqueResidence: "" })
+                    this.setState({ RueResidence: "" })
+                    this.setState({ DetailsResidence: "" })
+                }
 
-                await firebase.database().ref('Client/' + that.state.uid).update({
-                    Adresse1: that.state.Adresse1,
-                })
+                if (this.state.DisplayTravail == true) {
+                    await firebase.database().ref('Client/' + that.state.uid).update({
+                        AdresseTravail: that.state.PlaqueTravail + "," + that.state.RueTravail + "," + that.state.VilleTravail + "," + that.state.DetailsTravail,
+                    })
+                } else {
+                    await firebase.database().ref('Client/' + that.state.uid + "/AdresseTravail").remove()
+                    this.setState({ PlaqueTravail: "" })
+                    this.setState({ RueTravail: "" })
+                    this.setState({ DetailsTravail: "" })
+                }
 
-                await firebase.database().ref('Client/' + that.state.uid).update({
-                    Adresse2: that.state.Adresse2,
-                })
-                ToastAndroid.show(
-                    'Modification avec succes !',
-                    ToastAndroid.SHORT,
-                );
+                this.setState({ wait: false })
                 this.props.navigation.goBack(null)
             } catch (error) {
-                ToastAndroid.show(
-                    " Erreur l'hors de le la modification ",
-                    ToastAndroid.SHORT,
-                );
+                alert(error)
+
                 console.log(error)
+
             }
 
         }
     }
 
+    onValueChange(value) {
+        this.setState({
+            VilleResidence: value
+        });
+    }
 
+    onValueChange1(value) {
+        this.setState({
+            VilleTravail: value
+        });
+    }
 
     render() {
-
         return (
-
             <Container  >
-                <View style={{ paddingTop: 25 }}>
-                    <Header style={{ backgroundColor: 'white' }}>
-                        <Body style={{ alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Edition Profile</Text>
-                        </Body>
-                    </Header>
-                </View>
-                <Content >
-                    <Form style={{ paddingTop: 50 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Numero de Téléphone </Text>
-                        <Input keyboardType='numeric' maxLength={8} placeholder={Numero} onChangeText={(Numero) => this.setState({ Numero })}></Input>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Adresse</Text>
-                        <Input placeholder={Adresse1} onChangeText={(Adresse1) => this.setState({ Adresse1 })}></Input>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Adresse en détails (Ex: Prés de ..)</Text>
-                        <Input placeholder={Adresse2} onChangeText={(Adresse2) => this.setState({ Adresse2 })}></Input>
+                {this.state.wait == true ?
+                    <ActivityIndicator /> :
+                    <KeyboardAvoidingView style={{ flex: 2 }} behavior="padding" enabled>
+                        <Container>
+                            <Header style={{ height: styles.dim.height / 8, paddingTop: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF2E2A' }}>
+                                <Left style={{ flex: 2 }}>
+                                    <Button transparent onPress={() => this.handleBackButtonClick()}><Icon style={{ color: 'white' }} name="arrow-back"></Icon></Button>
 
-                    </Form>
+                                </Left>
+                                <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center', paddingLeft: 33 }}>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>Profile</Text>
+                                </Body>
+                                <Right style={{ flex: 4 }}>
+                                    <Button transparent onPress={() => this.Confirmer()}>
+                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Save</Text>
+                                    </Button>
+                                </Right>
+                            </Header>
+                            <Content >
+                                <Form style={{ alignSelf: 'center', paddingTop: (styles.dim.height / 20), width: styles.dim.width - (styles.dim.width / 10) }}>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Numero de téléphone</Text>
+                                    <Item>
+                                        <Input style={{ fontSize: 14 }} maxLength={8} keyboardType='number-pad' placeholder="ajouter numero de telephone..." value={this.state.Numero} onChangeText={(Numero) => this.setState({ Numero: Numero, Line1: false }, this.setState({ FirstLine: false }))}></Input>
+                                    </Item>
+                                    {this.state.Line1 == true ?
+                                        <View>
+                                            <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                            <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez numero de telephone</Text>
+                                        </View>
+                                        : console.log()}
 
-                    <View style={{ justifyContent: 'space-around', flex: 1 }}>
-                        <Button full style={{}} onPress={() => this.Confirmer()}><Label style={{ fontWeight: 'bold', color: 'white' }}>Enregistrer</Label></Button>
-                    </View>
-                </Content>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 16, paddingTop: 20 }}>Lieu de livraison</Text>
+                                    {/* aaaaaaaaaaaaaaaaaaa */}
+                                    <View style={{ borderWidth: this.state.Square1 == true ? 3 : 0, borderColor: this.state.Square1 == true ? '#5e0231' : 'white', }}>
+                                        <Card>
+                                            <CardItem
+                                                style={{ backgroundColor: this.state.DisplayResidence == true ? '#FF2E2A' : 'white' }}
+                                                button onPress={() => this.state.DisplayResidence == true ?
+                                                    this.setState({ DisplayResidence: false, Square1: false, VilleResidence: "", PlaqueResidence: "", RueResidence: '', DetailsResidence: '', Line2: false, Line3: false, Line4: false }) : this.setState({ DisplayResidence: true, Square1: false })}>
+                                                <Text style={{ fontSize: 14, color: this.state.DisplayResidence == true ? 'white' : '#FF2E2A', fontWeight: 'bold' }}> Lieu de residence</Text>
+                                            </CardItem>
+                                        </Card>
+                                        {this.state.DisplayResidence == true ?
+
+                                            <View>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Ville</Text>
+                                                <Item style={{ marginTop: -10 }}>
+                                                    <Picker
+                                                        mode="dropdown"
+                                                        iosIcon={<Icon name="arrow-down" />}
+                                                        headerStyle={{ backgroundColor: "#FF2E2A" }}
+                                                        headerBackButtonTextStyle={{ color: "#fff" }}
+                                                        headerTitleStyle={{ color: "#fff" }}
+                                                        selectedValue={this.state.VilleResidence}
+                                                        onValueChange={this.onValueChange.bind(this)}
+                                                    >
+                                                        <Picker.Item label="Choisir Ville" value="" />
+                                                        <Picker.Item label="Ariana Centre" value="Ariana" />
+                                                        <Picker.Item label="Centre Urbain Nord" value="Centre Urbain Nord" />
+                                                        <Picker.Item label="Charguia 2" value="Charguia2" />
+                                                        <Picker.Item label="Menzeh" value="Menzeh" />
+                                                        <Picker.Item label="Ennaser" value="Ennaser" />
+                                                    </Picker>
+                                                </Item>
+                                                {this.state.Line2 == true ?
+                                                    <View>
+                                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>ajouter ville</Text>
+                                                    </View>
+                                                    : console.log()}
+
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Numero de plaque</Text>
+                                                <Item style={{ marginTop: -10 }}>
+                                                    <Input style={{ fontSize: 14 }} keyboardType='number-pad' maxLength={3} placeholder={"Ajouter numero de plaque"} value={this.state.PlaqueResidence} onChangeText={(PlaqueResidence) => this.setState({ PlaqueResidence: PlaqueResidence, Line3: false })}></Input>
+                                                </Item>
+                                                {this.state.Line3 == true ?
+                                                    <View>
+                                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez numero de plaque</Text>
+                                                    </View>
+                                                    : console.log()}
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Rue</Text>
+
+                                                <Item style={{ marginTop: -10 }}>
+                                                    <Input style={{ fontSize: 14 }} placeholder={"Ajouter rue "} value={this.state.RueResidence} onChangeText={(RueResidence) => this.setState({ RueResidence: RueResidence, Line4: false })}></Input>
+                                                </Item>
+                                                {this.state.Line4 == true ?
+                                                    <View>
+                                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez le nom de rue</Text>
+                                                    </View>
+                                                    : console.log()}
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Details</Text>
+
+                                                <Item style={{ marginTop: -9 }}>
+                                                    <Input style={{ fontSize: 14 }} placeholder={"Ajouter plus de details"} value={this.state.DetailsResidence} onChangeText={(DetailsResidence) => this.setState({ DetailsResidence: DetailsResidence })}></Input>
+                                                </Item>
+                                            </View> : console.log()
+                                        }
+
+                                        <Card>
+                                            <CardItem style={{ backgroundColor: this.state.DisplayTravail == true ? '#FF2E2A' : 'white' }} button onPress={() => this.state.DisplayTravail == true ?
+
+                                                this.setState({ DisplayTravail: false, Square1: false, VilleTravail: "", PlaqueTravail: "", RueTravail: '', DetailsTravail: '', Line5: false, Line6: false, Line7: false }) : this.setState({ DisplayTravail: true, Square1: false })}>
+                                                <Text style={{ fontSize: 14, color: this.state.DisplayTravail == true ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>  Lieu de travail, etablissement scolaire..</Text>
+                                            </CardItem>
+                                        </Card>
+
+                                        {this.state.DisplayTravail == true ?
+
+
+                                            <View>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Ville</Text>
+                                                <Item style={{ marginTop: -10 }}>
+                                                    <Picker
+                                                        mode="dropdown"
+                                                        iosIcon={<Icon name="arrow-down" />}
+                                                        headerStyle={{ backgroundColor: "#FF2E2A" }}
+                                                        headerBackButtonTextStyle={{ color: "#fff" }}
+                                                        headerTitleStyle={{ color: "#fff" }}
+                                                        selectedValue={this.state.VilleTravail}
+                                                        onValueChange={this.onValueChange1.bind(this)}
+
+                                                    >
+                                                        <Picker.Item label="Choisir Ville" value="" />
+                                                        <Picker.Item label="Ariana Centre" value="Ariana" />
+                                                        <Picker.Item label="Centre Urbain Nord" value="Centre Urbain Nord" />
+                                                        <Picker.Item label="Charguia 2" value="Charguia2" />
+                                                        <Picker.Item label="Menzeh" value="Menzeh" />
+                                                        <Picker.Item label="Ennaser" value="Ennaser" />
+                                                    </Picker>
+                                                </Item>
+                                                {this.state.Line5 == true ?
+                                                    <View>
+                                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Ajouter ville</Text>
+                                                    </View>
+                                                    : console.log()}
+
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Numero de plaque</Text>
+                                                <Item style={{ marginTop: -10 }}>
+                                                    <Input style={{ fontSize: 14 }} keyboardType='number-pad' maxLength={3} placeholder={"Ajouter numero de plaque"} value={this.state.PlaqueTravail} onChangeText={(PlaqueTravail) => this.setState({ PlaqueTravail: PlaqueTravail, Line6: false })}></Input>
+                                                </Item>
+                                                {this.state.Line6 == true ?
+                                                    <View>
+                                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez numero de plaque</Text>
+                                                    </View>
+                                                    : console.log()}
+
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Rue</Text>
+                                                <Item style={{ marginTop: -10 }}>
+                                                    <Input style={{ fontSize: 14 }} placeholder={"Ajouter nom de rue.."} value={this.state.RueTravail} onChangeText={(RueTravail) => this.setState({ RueTravail: RueTravail, Line7: false })}></Input>
+                                                </Item>
+                                                {this.state.Line7 == true ?
+                                                    <View>
+                                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez nom de rue</Text>
+                                                    </View>
+                                                    : console.log()}
+
+                                                <Text style={{ fontWeight: 'bold', fontSize: 13, paddingLeft: 20, paddingTop: 10 }}>Details</Text>
+                                                <Item style={{ marginTop: -9 }}>
+                                                    <Input style={{ fontSize: 14 }} placeholder={"Ajouter plus de details"} value={this.state.DetailsTravail} onChangeText={(DetailsTravail) => this.setState({ DetailsTravail })}></Input>
+                                                </Item>
+                                            </View> : console.log()
+                                        }
+                                        {this.state.Square1 == true ?
+                                            <View>
+                                                <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                                <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Vous devez au moins avoir un lieu de livraison</Text>
+                                            </View>
+                                            : console.log()}
+
+                                    </View>
+
+                                </Form>
+
+                            </Content>
+
+                        </Container>
+                    </KeyboardAvoidingView>
+
+                }
 
             </Container>
         );
@@ -174,7 +404,13 @@ export default Modification;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+
+    dim: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
     }
+
 });
 
 

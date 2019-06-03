@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import {
     View,
-    ToastAndroid,
-    StyleSheet,Alert,BackHandler
+    Text,
+    StyleSheet, ToastAndroid, Alert, BackHandler, Dimensions
 } from "react-native";
-import { Toast, Container, Header, Title, Button, Left, Right, Text, Body, Icon, Label, Input, Content, Form, ListItem, Radio } from 'native-base';
+import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Form, Input, Label, Picker, CheckBox, ListItem, Card, CardItem, Item, Radio } from 'native-base';
 import * as firebase from 'firebase'
+import ActivityIndicator from '../../ActivityIndicator'
+
 var Numero = ""
 class Modification extends Component {
     constructor(props) {
@@ -18,15 +20,16 @@ class Modification extends Component {
             radio1: '',//Deplacement
             Ancienradio1: '',
             radio2: '',//Shift
-            AncienShift: ''
+            AncienShift: '',
+            wait: true
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-   
     }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
+
     handleBackButtonClick() {
         Alert.alert(
             'Retourn',
@@ -41,7 +44,6 @@ class Modification extends Component {
             ],
             { cancelable: false },
         );
-
         return true;
     }
 
@@ -62,31 +64,29 @@ class Modification extends Component {
 
             that.setState({ radio2: snap.val().Shift })
             that.setState({ AncienShift: snap.val().Shift })
-
         })
 
+        this.setState({ wait: false })
     }
 
     async Confirmer() {
         var that = this
 
         try {
-            //Update Deplacement
             if (this.state.radio1 != this.state.Ancienradio1) {
                 await firebase.database().ref('Livreur/' + that.state.uid).update({
                     Deplacement: that.state.radio1,
                 })
                 this.setState({ Ancienradio1: this.state.radio1 })
             }
-            //Update Shift
+
             if (this.state.radio2 !== this.state.AncienShift) {
-                // console.log("Ancien" + this.state.AncienShift + " Nouveau " + this.state.radio2)
+                this.setState({ wait: true })
                 await firebase.database().ref('Livreur/' + that.state.uid).update({
                     Shift: that.state.radio2,
                 })
 
                 if (this.state.AncienShift === 'DejeunerEtDinner') {
-
                     if (this.state.radio2 === 'Dejeuner') {
                         await firebase.database().ref('Livreur/Dinner/' + this.state.uid).remove()
                         this.setState({ AncienShift: 'Dejeuner' })
@@ -118,7 +118,6 @@ class Modification extends Component {
                     }
                 }
                 if (this.state.AncienShift === 'Dinner') {
-
                     if (this.state.radio2 === 'Dejeuner') {
                         await firebase.database().ref('Livreur/Dinner/' + this.state.uid).remove()
                         await firebase.database().ref('Livreur/Dejeuner/' + this.state.uid).set({
@@ -137,28 +136,32 @@ class Modification extends Component {
                         this.setState({ AncienShift: 'DejeunerEtDinner' })
                     }
                 }
-
             }
 
-            //Update Numero
-            if (this.state.Numero == '' || this.state.Numero.length < 8) {
-                ToastAndroid.show(
-                    " Numero de Téléphone incorrect! ",
-                    ToastAndroid.SHORT,
-                );
-            }
 
+            if (this.state.Numero == this.state.AncienNumero) {
+                this.setState({ wait: false })
+                this.props.navigation.goBack(null)
+            }
+            else if (this.state.Numero.length < 8) {
+                this.setState({ wait: false })
+                this.setState({ Line1: true })
+            }
             else if (this.state.AncienNumero !== this.state.Numero) {
-                await firebase.database().ref('Livreur/' + that.state.uid).update({
+                if (this.state.wait == false)
+                    this.setState({ wait: true })
+
+                firebase.database().ref('Livreur/' + that.state.uid).update({
                     Numero: that.state.Numero,
                 })
+
                 if (this.state.radio2 === 'DejeunerEtDinner') {
-                    await firebase.database().ref('Livreur/Dejeuner/' + that.state.uid).set({
+                    firebase.database().ref('Livreur/Dejeuner/' + that.state.uid).set({
                         Numero: that.state.Numero,
                         Nom: that.state.Nom,
                         Id: that.state.uid
                     })
-                    await firebase.database().ref('Livreur/Dinner/' + that.state.uid).set({
+                    firebase.database().ref('Livreur/Dinner/' + that.state.uid).set({
                         Numero: that.state.Numero,
                         Nom: that.state.Nom,
                         Id: that.state.uid
@@ -166,20 +169,21 @@ class Modification extends Component {
                 }
 
                 if (this.state.radio2 === 'Dejeuner') {
-                    await firebase.database().ref('Livreur/Dejeuner/' + that.state.uid).set({
+                    firebase.database().ref('Livreur/Dejeuner/' + that.state.uid).set({
                         Numero: that.state.Numero,
                         Nom: that.state.Nom,
                         Id: that.state.uid
                     })
                 }
                 if (this.state.radio2 === 'Dinner') {
-                    await firebase.database().ref('Livreur/Dinner/' + that.state.uid).set({
+                    firebase.database().ref('Livreur/Dinner/' + that.state.uid).set({
                         Numero: that.state.Numero,
                         Nom: that.state.Nom,
                         Id: that.state.uid
                     })
                 }
                 let rootRef = firebase.database().ref()
+
                 await firebase.database().ref('Commandes/')
                     .orderByChild('NumeroLivreur').equalTo(that.state.AncienNumero.toString()).once('value', function (snap) {
                         if (snap.val() != null) {
@@ -190,18 +194,12 @@ class Modification extends Component {
                             })
                             rootRef.update(updateObj)
                         }
-
                     })
                 this.setState({ AncienNumero: this.state.Numero })
-
-                ToastAndroid.show(
-                    'Modification avec succes !',
-                    ToastAndroid.SHORT,
-
-                );
+                this.setState({ wait: false })
+                this.props.navigation.goBack(null)
             }
 
-           this.props.navigation.goBack(null) 
 
         } catch (error) {
             ToastAndroid.show(
@@ -217,97 +215,83 @@ class Modification extends Component {
     render() {
         return (
             <Container >
-                <View style={{ alignItems: 'center', paddingTop: 50 }}>
-                    <Label style={{ fontWeight: 'bold', fontSize: 20 }}>Changer vos informations</Label>
-                </View>
-                <Content >
-                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Numero de téléphone </Text>
-                    <Input keyboardType='numeric' maxLength={8} placeholder={Numero} onChangeText={(Numero) => this.setState({ Numero })}></Input>
-                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Vous vous déplacez avec</Text>
-                    <ListItem selected={this.state.radio1 === 'Bicyclette'}>
-                        <Left>
-                            <Text>Bicyclette</Text>
-                        </Left>
-                        <Right>
-                            <Radio
-                                color={"black"}
-                                selectedColor={"black"}
-                                selected={this.state.radio1 === 'Bicyclette'}
-                                onPress={() => this.setState({ radio1: 'Bicyclette' })}
-                            />
-                        </Right>
-                    </ListItem>
-                    <ListItem selected={this.state.radio1 == 'Moto'}>
-                        <Left>
-                            <Text>Moto</Text>
-                        </Left>
-                        <Right>
-                            <Radio
-                                color={"black"}
-                                selectedColor={"black"}
-                                selected={this.state.radio1 === 'Moto'}
-                                onPress={() => this.setState({ radio1: 'Moto' })}
-                            />
-                        </Right>
-                    </ListItem>
-                    <ListItem selected={this.state.radio1 === 'Voiture'}>
-                        <Left>
-                            <Text >Voiture</Text>
-                        </Left>
-                        <Right>
-                            <Radio
-                                color={"black"}
-                                selectedColor={"black"}
-                                selected={this.state.radio1 === 'Voiture'}
-                                onPress={() => this.setState({ radio1: 'Voiture' })}
-                            />
-                        </Right>
-                    </ListItem>
+                {this.state.wait == true ?
+                    <ActivityIndicator />
+                    :
+                    <Container>
 
-                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Vous voulez travailler le</Text>
-                    <ListItem selected={this.state.radio2 === 'Dejeuner'}>
-                        <Left>
-                            <Text>Déjeuner</Text>
-                        </Left>
-                        <Right>
-                            <Radio
-                                color={"black"}
-                                selectedColor={"black"}
-                                selected={this.state.radio2 === 'Dejeuner'}
-                                onPress={() => this.setState({ radio2: 'Dejeuner' })}
-                            />
-                        </Right>
-                    </ListItem>
-                    <ListItem selected={this.state.radio2 === 'Dinner'}>
-                        <Left>
-                            <Text>Diner</Text>
-                        </Left>
-                        <Right>
-                            <Radio
-                                color={"black"}
-                                selectedColor={"black"}
-                                selected={this.state.radio2 === 'Dinner'}
-                                onPress={() => this.setState({ radio2: 'Dinner' })}
-                            />
-                        </Right>
-                    </ListItem>
-                    <ListItem selected={this.state.radio2 === 'DejeunerEtDinner'}>
-                        <Left>
-                            <Text>Déjeuner et Diner</Text>
-                        </Left>
-                        <Right>
-                            <Radio
-                                color={"black"}
-                                selectedColor={"black"}
-                                selected={this.state.radio2 === 'DejeunerEtDinner'}
-                                onPress={() => this.setState({ radio2: 'DejeunerEtDinner' })}
-                            />
-                        </Right>
-                    </ListItem>
-                    <View style={{ justifyContent: 'space-around' }}>
-                        <Button full style={{}} onPress={() => this.Confirmer()}><Label style={{ fontWeight: 'bold', color: 'white' }}>Enregistrer</Label></Button>
-                    </View>
-                </Content>
+                        <Header style={{ height: styles.dim.height / 8, paddingTop: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF2E2A' }}>
+                            <Left style={{ flex: 2 }}>
+                                <Button transparent onPress={() => this.handleBackButtonClick()}><Icon style={{ color: 'white' }} name="arrow-back"></Icon></Button>
+
+                            </Left>
+                            <Body style={{ alignSelf: 'center', flex: 8, alignItems: 'center', paddingLeft: 33 }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>Profile</Text>
+                            </Body>
+                            <Right style={{ flex: 4 }}>
+                                <Button transparent onPress={() => this.Confirmer()}>
+                                    <Text style={{ color: 'white', fontWeight: 'bold' }}>Save</Text>
+                                </Button>
+                            </Right>
+                        </Header>
+
+                        <Content >
+                            <Form style={{ alignSelf: 'center', paddingTop: (styles.dim.height / 15), width: styles.dim.width - (styles.dim.width / 10) }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Numero de telephone</Text>
+                                <Item>
+                                    <Input style={{ fontSize: 14 }} maxLength={8} keyboardType={'number-pad'} placeholder={"Ajouter numero de telephone"} value={this.state.Numero} onChangeText={(Numero) => this.setState({ Numero: Numero, Line1: false })}></Input>
+                                </Item>
+                                {this.state.Line1 == true ?
+                                    <View>
+                                        <View style={{ borderBottomColor: '#5e0231', borderBottomWidth: 3, }} />
+                                        <Text style={{ fontSize: 12, color: '#5e0231', fontStyle: 'italic' }}>Verifiez numero de telephone</Text>
+                                    </View>
+                                    : console.log()}
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, paddingTop: 20 }}>Vous vous deplacez avec</Text>
+
+                                <Card>
+                                    <CardItem button style={{ backgroundColor: this.state.radio1 == 'Bicyclette' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio1: 'Bicyclette', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio1 == 'Bicyclette' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Bicyclette</Text>
+                                    </CardItem>
+                                </Card>
+                                <Card >
+
+                                    <CardItem button style={{ backgroundColor: this.state.radio1 == 'Moto' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio1: 'Moto', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio1 == 'Moto' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Moto</Text>
+                                    </CardItem>
+                                </Card>
+                                <Card>
+                                    <CardItem button style={{ backgroundColor: this.state.radio1 == 'Voiture' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio1: 'Voiture', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio1 == 'Voiture' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Voiture</Text>
+                                    </CardItem>
+                                </Card>
+
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, paddingTop: 20 }}>Vous travaillez le</Text>
+
+                                <Card>
+                                    <CardItem button style={{ backgroundColor: this.state.radio2 == 'Dejeuner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'Dejeuner', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio2 == 'Dejeuner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Dejeuner</Text>
+                                    </CardItem>
+                                </Card>
+
+                                <Card >
+                                    <CardItem button style={{ backgroundColor: this.state.radio2 == 'Dinner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'Dinner', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio2 == 'Dinner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Diner</Text>
+                                    </CardItem>
+                                </Card>
+
+                                <Card>
+
+                                    <CardItem button style={{ backgroundColor: this.state.radio2 == 'DejeunerEtDinner' ? '#FF2E2A' : 'white' }} onPress={() => this.setState({ radio2: 'DejeunerEtDinner', })}>
+                                        <Text style={{ fontSize: 14, color: this.state.radio2 == 'DejeunerEtDinner' ? 'white' : '#FF2E2A', fontWeight: 'bold' }}>Dejeuner et Diner</Text>
+                                    </CardItem>
+
+                                </Card>
+
+                            </Form>
+                        </Content>
+                    </Container>
+                }
             </Container>
         );
     }
@@ -319,5 +303,11 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+
+    dim: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
     }
+
 });

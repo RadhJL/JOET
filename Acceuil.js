@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import {
     View,
-    StyleSheet, Text
+    StyleSheet, Text, ActivityIndicator
 } from "react-native";
-import { Container, Header, Title, Button, Left, Right, Body, Icon, Label, Input,Content } from 'native-base';
+import { Container, Header, Title, Button, Left, Right, Body, Icon, Label, Input, Content } from 'native-base';
 import * as firebase from 'firebase'
 
 export default class Acceuil extends React.Component {
@@ -18,7 +18,7 @@ export default class Acceuil extends React.Component {
         await firebase.auth().onAuthStateChanged((user) => {
             if (user == null)
                 that.props.navigation.navigate("Login")
-          else {
+            else {
                 var userr = firebase.auth().currentUser;
                 firebase.database().ref('Users/' + userr.uid).once('value').then(function (snapshot) {
                     if (snapshot.val() == null) {
@@ -43,11 +43,15 @@ export default class Acceuil extends React.Component {
     render() {
         return (
 
-            <Container>
+            <Container style={{ backgroundColor: '#FF2E2A' }}>
                 <Content >
-                    <View style={{justifyContent:'center',alignItems:'center',flex:1,paddingTop:250}}>
-                        <Label style={{ fontWeight: 'bold', fontSize: 30 }}>JOET</Label>
-                        <Label style={{ fontSize: 25 }}>Manger, comme chez vous!</Label>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1, paddingTop: 150 }}>
+                        <Label style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>JOET ?</Label>
+                        <Label style={{ paddingTop: 20, fontSize: 25, color: 'white' }}>Manger, comme chez vous!</Label>
+                    </View>
+                    <ActivityIndicator style={{paddingTop:50}} size="large" color="white" />
+                    <View style={{ paddingTop: 200 }}>
+                        <Label style={{ alignSelf: 'center', paddingTop: 20, fontSize: 15, color: 'white',fontWeight:'bold' }}>version 1.0</Label>
                     </View>
                 </Content>
             </Container>
@@ -59,7 +63,7 @@ export default class Acceuil extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#F1EFEA',
         alignItems: 'center',
         justifyContent: 'center',
     },

@@ -8,13 +8,13 @@ const Livreur=createBottomTabNavigator({
     Profile:{screen:Profile},
 },{
     tabBarOptions: {
-        activeTintColor: 'black',
+        activeTintColor: '#FF2E2A',
         labelStyle: {
-          fontSize: 18,
+          fontSize: 15,
           fontWeight:'bold'
         },
         style: {
-          backgroundColor: 'white',
+          backgroundColor: '#fafafa',
         },
       }
 
