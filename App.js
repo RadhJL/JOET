@@ -30,7 +30,7 @@ console.warn = message => {
 }
 
 var config = {
-  apiKey: "AIzaSyB5r_knTurXCWVHrvE3h2o5gVbDyzoD0Ic",
+  apiKey: "",
   authDomain: "joet-7a3c2.firebaseapp.com",
   databaseURL: "https://joet-7a3c2.firebaseio.com",
   projectId: "joet-7a3c2",
